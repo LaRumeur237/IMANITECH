@@ -249,3 +249,4 @@ _Envoyé depuis le formulaire contact imani-tech.cm_`;
 };
 
 export default ContactPage;
+

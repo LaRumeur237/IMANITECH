@@ -139,3 +139,5 @@ function simulateAuditSummary(formData: {
 }): string {
   return `RAPPORT D'AUDIT PRÉLIMINAIRE\n\n${formData.company ? `Entreprise : ${formData.company}` : "Votre entreprise"}\n${formData.city ? `Localisation : ${formData.city}` : ""}\n\nDIAGNOSTIC RAPIDE :\nBasé sur vos besoins identifiés${formData.needs?.length ? ` (${formData.needs.join(", ")})` : ""}, nous recommandons une intervention prioritaire sur votre infrastructure IT.\n\nRECOMMANDATIONS :\n- Audit complet sur site (gratuit)\n- Mise à niveau de l'infrastructure réseau\n- Déploiement de solutions de sécurité adaptées\n- Formation de vos équipes\n\nDÉLAI ESTIMÉ : 2 à 4 semaines\n\nUn expert IMANI-TECH vous contactera sous 24h pour planifier votre audit gratuit.`;
 }
+
+

@@ -474,3 +474,5 @@ export const PRICING_OPTIONS = {
     { id: 'soft', name: 'App de Gestion Stock', price: 250000 }
   ]
 };
+
+

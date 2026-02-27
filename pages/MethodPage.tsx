@@ -109,3 +109,5 @@ const MethodPage: React.FC = () => {
 };
 
 export default MethodPage;
+
+
