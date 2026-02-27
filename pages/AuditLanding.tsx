@@ -32,18 +32,18 @@ const AuditLanding: React.FC = () => {
       setResult(feedback);
 
       // ── 2. Ouvrir WhatsApp avec les données du formulaire pré-remplies ───────
-      const message = `🔍 *DEMANDE D'AUDIT TECHNIQUE — IMANI-TECH*
+      const message = ` *DEMANDE D'AUDIT TECHNIQUE — IMANI-TECH*
 
 ━━━━━━━━━━━━━━━━━━━━━━
-👤 *Nom :* ${form.name}
-🏢 *Structure :* ${form.company}
+ *Nom :* ${form.name}
+ *Structure :* ${form.company}
 ━━━━━━━━━━━━━━━━━━━━━━
 
-✉️ *Email :* ${form.email}
-📱 *WhatsApp :* ${form.phone}
+ *Email :* ${form.email}
+ *WhatsApp :* ${form.phone}
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🎯 *Défi / Objectif :*
+ *Défi / Objectif :*
 ${form.objective}
 
 ━━━━━━━━━━━━━━━━━━━━━━

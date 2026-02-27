@@ -25,19 +25,19 @@ const ContactPage: React.FC = () => {
 
     try {
       // ── Construction du message WhatsApp formaté ────────────────────────────
-      const waMessage = `🚀 *NOUVELLE DEMANDE DE CONSULTATION — IMANI-TECH*
+      const waMessage = ` *NOUVELLE DEMANDE DE CONSULTATION — IMANI-TECH*
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🏢 *Entreprise :* ${entreprise}
-📍 *Localisation :* ${localisation}
+ *Entreprise :* ${entreprise}
+ *Localisation :* ${localisation}
 ━━━━━━━━━━━━━━━━━━━━━━
 
-📱 *WhatsApp :* ${whatsapp}
-✉️ *Email :* ${email}
-💰 *Budget :* ${budget || 'Non précisé'}
+ *WhatsApp :* ${whatsapp}
+ *Email :* ${email}
+ *Budget :* ${budget || 'Non précisé'}
 
 ━━━━━━━━━━━━━━━━━━━━━━
-💬 *Détails du projet :*
+ *Détails du projet :*
 ${message}
 
 ━━━━━━━━━━━━━━━━━━━━━━
