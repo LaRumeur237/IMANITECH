@@ -1,0 +1,8 @@
+{
+  "name": "IMANI-TECH SOLUTIONS",
+  "description": "Premium digital acquisition and digitalization agency for SMEs across all cities in Cameroon (Douala, Yaoundé, Bafoussam, etc.). High-performance sales tunnels, automation, and custom digital solutions.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

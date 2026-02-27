@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMANI-TECH SOLUTIONS | Agence Digitale Premium Cameroun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                brand: {
+                  orange: '#FF5F00',
+                  beige: '#F9F7F2',
+                  white: '#FFFFFF',
+                  stone: '#1C1917',
+                  sand: '#E5E1DA',
+                  cream: '#FFFBF7'
+                }
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9F7F2;
+            color: #1C1917;
+            overflow-x: hidden;
+        }
+        ::selection {
+            background-color: #FF5F00;
+            color: white;
+        }
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #F9F7F2;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #E5E1DA;
+          border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #FF5F00;
+        }
+        /* Animation d'apparition globale */
+        .page-appear {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.564.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-brand-beige text-brand-stone">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
