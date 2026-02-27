@@ -75,7 +75,7 @@ const ServiceSection: React.FC<{
 
         <div className="flex-1 w-full relative z-10">
           <div className="aspect-[4/3] bg-brand-beige rounded-[3rem] overflow-hidden shadow-inner border border-brand-sand relative group-hover:scale-[1.02] transition-transform duration-700">
-             <img src={`https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&seed=${service.id}`} alt={service.title} className="w-full h-full object-cover mix-blend-multiply opacity-80" />
+             <img loading="lazy" src={`https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&seed=${service.id}`} alt={service.title} className="w-full h-full object-cover mix-blend-multiply opacity-80" />
              <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent"></div>
           </div>
         </div>
@@ -154,7 +154,7 @@ const ServicesPage: React.FC = () => {
       <section className="bg-white py-32 px-4 relative overflow-hidden border-b border-brand-sand">
         {/* Background Image Accent */}
         <div className="absolute inset-0 z-0">
-          <img 
+          <img loading="lazy" 
             src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2000" 
             alt="Expertise Technique" 
             className="w-full h-full object-cover opacity-[0.03]"
@@ -239,5 +239,8 @@ const ServicesPage: React.FC = () => {
 };
 
 export default ServicesPage;
+
+
+
 
 

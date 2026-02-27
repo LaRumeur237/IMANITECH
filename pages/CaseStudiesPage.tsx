@@ -55,7 +55,7 @@ const CaseStudiesPage: React.FC = () => {
                 className="group cursor-pointer animate-in fade-in slide-in-from-bottom duration-700"
               >
                  <div className="aspect-[16/9] rounded-[3.5rem] overflow-hidden mb-10 shadow-2xl relative border-8 border-white group-hover:border-brand-orange/20 transition-all">
-                    <img src={c.imageUrl} alt={c.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                    <img loading="lazy" src={c.imageUrl} alt={c.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-stone/90 via-transparent to-transparent opacity-60"></div>
                     <div className="absolute top-6 left-6">
                        <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl flex items-center space-x-2 text-brand-stone shadow-lg border border-white/50">
@@ -217,5 +217,8 @@ const CaseStudiesPage: React.FC = () => {
 };
 
 export default CaseStudiesPage;
+
+
+
 
 

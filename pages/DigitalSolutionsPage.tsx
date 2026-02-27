@@ -52,7 +52,7 @@ const DigitalSolutionsPage: React.FC = () => {
               >
                 {/* Illustrative Image */}
                 <div className="h-64 relative overflow-hidden">
-                   <img 
+                   <img loading="lazy" 
                     src={service.imageUrl} 
                     alt={service.title} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -241,5 +241,8 @@ const DigitalSolutionsPage: React.FC = () => {
 };
 
 export default DigitalSolutionsPage;
+
+
+
 
 

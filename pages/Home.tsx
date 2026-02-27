@@ -385,7 +385,7 @@ const BackgroundSlideshow: React.FC = () => {
             transform: i === current ? 'scale(1.04)' : 'scale(1.1)',
           }}
         >
-          <img src={src} alt="" className="w-full h-full object-cover"/>
+          <img loading="lazy" src={src} alt="" className="w-full h-full object-cover"/>
         </div>
       ))}
       {/* layered overlays */}
@@ -655,7 +655,7 @@ const Home: React.FC = () => {
               >
                 {/* background image on hover */}
                 <div className="absolute inset-0 transition-opacity duration-700 opacity-0 group-hover:opacity-30">
-                  <img src={serviceImages[i % serviceImages.length]} alt="" className="w-full h-full object-cover"/>
+                  <img loading="lazy" src={serviceImages[i % serviceImages.length]} alt="" className="w-full h-full object-cover"/>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] to-transparent"/>
                 </div>
 
@@ -780,7 +780,7 @@ const Home: React.FC = () => {
       ══════════════════════════════════════════════════════ */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?auto=format&fit=crop&q=80&w=2000" alt="" className="w-full h-full object-cover"/>
+          <img loading="lazy" src="https://images.unsplash.com/photo-1629904853893-c2c8981a1dc5?auto=format&fit=crop&q=80&w=2000" alt="" className="w-full h-full object-cover"/>
           <div className="absolute inset-0 bg-[#0a0a14]/90"/>
         </div>
         <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -833,5 +833,8 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+
+
 
 
