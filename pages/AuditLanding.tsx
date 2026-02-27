@@ -8,12 +8,14 @@ import { generateAuditSummary } from '../services/geminiService';
 import { SITE_NAME, WHATSAPP_LINK, OFFICIAL_EMAIL } from '../data';
 
 const AuditLanding: React.FC = () => {
-  const [loading, setLoading]   = useState(false);
-  const [result,  setResult]    = useState<string | null>(null);
-  const [error,   setError]     = useState<string>('');
-  const [form,    setForm]      = useState({
-    name: '', company: '', email: '', phone: '', objective: ''
+  const [loading, setLoading] = useState(false);
+  const [result,  setResult]  = useState<string | null>(null);
+  const [error,   setError]   = useState<string>('');
+  const [form,    setForm]    = useState({
+    name: '', company: '', email: '', phone: '', objective: '',
   });
+
+  const WHATSAPP_AUDIT_NUMBER = '237672777657';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,43 +23,47 @@ const AuditLanding: React.FC = () => {
     setError('');
 
     try {
-      // ── 1. Envoyer l'email via la fonction serverless (Resend) ──────────────
-      const emailRes = await fetch('/.netlify/functions/send-email', {
-        // Pour Vercel → '/api/send-email'
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type:      'audit',          // ← identifie le formulaire audit
-          name:      form.name,
-          company:   form.company,
-          email:     form.email,
-          phone:     form.phone,
-          objective: form.objective,
-        }),
+      // ── 1. Générer le résumé IA ──────────────────────────────────────────────
+      const feedback = await generateAuditSummary({
+        company: `${form.name} — ${form.company}`,
+        needs:   [form.objective],
       });
 
-      if (!emailRes.ok) {
-        const err = await emailRes.json();
-        console.warn('Email non envoyé :', err.error);
-        // On ne bloque pas — on continue quand même vers la réponse IA
-      }
-
-      // ── 2. Générer le résumé IA pour l'utilisateur ──────────────────────────
-    const feedback = await generateAuditSummary({
-  company: `${form.name} — ${form.company}`,
-  needs:   [form.objective],
-})
       setResult(feedback);
+
+      // ── 2. Ouvrir WhatsApp avec les données du formulaire pré-remplies ───────
+      const message = `🔍 *DEMANDE D'AUDIT TECHNIQUE — IMANI-TECH*
+
+━━━━━━━━━━━━━━━━━━━━━━
+👤 *Nom :* ${form.name}
+🏢 *Structure :* ${form.company}
+━━━━━━━━━━━━━━━━━━━━━━
+
+✉️ *Email :* ${form.email}
+📱 *WhatsApp :* ${form.phone}
+
+━━━━━━━━━━━━━━━━━━━━━━
+🎯 *Défi / Objectif :*
+${form.objective}
+
+━━━━━━━━━━━━━━━━━━━━━━
+_Envoyé depuis le formulaire d'audit imani-tech.cm_`;
+
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${WHATSAPP_AUDIT_NUMBER}?text=${encodedMessage}`;
+
+      // Ouvre WhatsApp dans un nouvel onglet
+      window.open(whatsappUrl, '_blank');
 
     } catch (err) {
       console.error(err);
-      setError('Une erreur est survenue. Veuillez réessayer ou nous contacter via WhatsApp.');
+      setError('Une erreur est survenue. Réessayez ou contactez-nous directement.');
     } finally {
       setLoading(false);
     }
   };
 
-  // ── Écran de confirmation ────────────────────────────────────────────────────
+  // ── Écran résultat ──────────────────────────────────────────────────────────
   if (result) {
     return (
       <div className="min-h-screen bg-brand-cream flex items-center justify-center py-20 px-4 page-appear">
@@ -73,20 +79,18 @@ const AuditLanding: React.FC = () => {
             </h1>
           </div>
 
-          {/* Notification email envoyé */}
           <div className="mb-8 bg-brand-beige p-6 rounded-2xl border border-brand-sand/50 flex items-center space-x-4">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-orange shadow-sm border border-brand-sand">
+            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-orange shadow-sm border border-brand-sand shrink-0">
               <Mail size={20}/>
             </div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-brand-stone/40">Notification Experts</p>
               <p className="text-xs font-bold text-brand-stone">
-                Copie envoyée à <strong className="text-brand-orange">{OFFICIAL_EMAIL}</strong>
+                Copie transmise à <strong className="text-brand-orange">{OFFICIAL_EMAIL}</strong>
               </p>
             </div>
           </div>
 
-          {/* Résumé IA */}
           <div className="bg-brand-orange/5 border-l-8 border-brand-orange p-8 mb-10 rounded-r-[2rem] relative z-10">
             <h3 className="font-black text-brand-orange mb-4 flex items-center text-xs uppercase tracking-[0.2em]">
               <Zap size={16} className="mr-2"/> Note Stratégique IA
@@ -99,18 +103,11 @@ const AuditLanding: React.FC = () => {
               Session expert confirmée pour le <span className="text-brand-stone">{form.phone}</span>.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/"
-                className="inline-flex items-center bg-brand-stone text-white px-10 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-brand-orange transition-all shadow-xl shadow-brand-stone/20"
-              >
+              <Link to="/" className="inline-flex items-center justify-center bg-brand-stone text-white px-10 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-brand-orange transition-all shadow-xl shadow-brand-stone/20">
                 Retour au site <ArrowRight size={14} className="ml-2"/>
               </Link>
-              <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center bg-green-500 text-white px-10 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-green-500/10"
-              >
+              <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer"
+                className="inline-flex items-center justify-center bg-green-500 text-white px-10 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-green-500/10">
                 Besoin d'aide ?
               </a>
             </div>
@@ -120,9 +117,10 @@ const AuditLanding: React.FC = () => {
     );
   }
 
-  // ── Formulaire principal ─────────────────────────────────────────────────────
+  // ── Formulaire ──────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-brand-cream text-brand-stone font-inter page-appear">
+
       <nav className="p-8 border-b border-brand-sand bg-brand-beige sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2 group">
@@ -140,7 +138,6 @@ const AuditLanding: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-center">
 
-        {/* Left — pitching */}
         <div className="text-center lg:text-left animate-in fade-in duration-700">
           <div className="inline-block px-4 py-1.5 bg-brand-orange/10 border border-brand-orange/20 text-brand-orange text-[10px] font-black rounded-full mb-10 uppercase tracking-[0.2em] shadow-sm">
             Expertise Nationale Certifiée
@@ -168,7 +165,6 @@ const AuditLanding: React.FC = () => {
           </div>
         </div>
 
-        {/* Right — form */}
         <div className="bg-white p-10 sm:p-16 rounded-[3rem] shadow-2xl border border-brand-sand relative overflow-hidden animate-in zoom-in duration-700">
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-brand-orange/5 blur-[100px] rounded-full"/>
 
@@ -180,8 +176,7 @@ const AuditLanding: React.FC = () => {
 
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Nom Complet</label>
-              <input
-                required type="text" value={form.name}
+              <input required type="text" value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })}
                 placeholder="Ex: Marc Atangana"
                 className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
@@ -190,10 +185,9 @@ const AuditLanding: React.FC = () => {
 
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Structure & Localisation</label>
-              <input
-                required type="text" value={form.company}
+              <input required type="text" value={form.company}
                 onChange={e => setForm({ ...form, company: e.target.value })}
-                placeholder="Ex: Sarl - Yaoundé"
+                placeholder="Ex: Crystal Akwa Sarl — Yaoundé"
                 className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
               />
             </div>
@@ -201,8 +195,7 @@ const AuditLanding: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Email Pro</label>
-                <input
-                  required type="email" value={form.email}
+                <input required type="email" value={form.email}
                   onChange={e => setForm({ ...form, email: e.target.value })}
                   placeholder="contact@domain.cm"
                   className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
@@ -210,8 +203,7 @@ const AuditLanding: React.FC = () => {
               </div>
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">WhatsApp</label>
-                <input
-                  required type="tel" value={form.phone}
+                <input required type="tel" value={form.phone}
                   onChange={e => setForm({ ...form, phone: e.target.value })}
                   placeholder="+237 6..."
                   className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
@@ -221,16 +213,13 @@ const AuditLanding: React.FC = () => {
 
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Quel est votre défi majeur ?</label>
-              <textarea
-                required value={form.objective}
+              <textarea required value={form.objective}
                 onChange={e => setForm({ ...form, objective: e.target.value })}
-                rows={3}
-                placeholder="Expliquez-nous brièvement vos attentes..."
+                rows={3} placeholder="Expliquez-nous brièvement vos attentes..."
                 className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold resize-none transition-all placeholder:text-brand-stone/30"
               />
             </div>
 
-            {/* Erreur */}
             {error && (
               <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-2xl p-4">
                 <AlertCircle size={16} className="text-red-500 shrink-0"/>
@@ -238,20 +227,18 @@ const AuditLanding: React.FC = () => {
               </div>
             )}
 
-            <button
-              disabled={loading}
-              type="submit"
+            <button disabled={loading} type="submit"
               className="w-full bg-brand-orange hover:bg-brand-stone text-white py-6 rounded-xl font-black text-xl transition-all shadow-xl shadow-brand-orange/30 flex items-center justify-center disabled:opacity-50 mt-4 uppercase tracking-tighter"
             >
               {loading
-                ? <><Loader2 className="animate-spin mr-3"/> Analyse Stratégique...</>
+                ? <><Loader2 className="animate-spin mr-3" size={22}/> Analyse en cours...</>
                 : 'Réclamer mon Audit National'
               }
             </button>
 
             <div className="flex items-center justify-center space-x-2 text-[9px] font-black uppercase tracking-[0.2em] text-brand-stone/30">
               <ShieldCheck size={12} className="text-brand-orange"/>
-              <span>Envoi sécurisé · imanitechsolutions237@gmail.com</span>
+              <span>Envoi sécurisé via Resend · imanitechsolutions237@gmail.com</span>
             </div>
           </form>
         </div>

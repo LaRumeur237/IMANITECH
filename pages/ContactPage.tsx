@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, MessageSquare, Send, Globe, ChevronRight, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { Phone, Mail, MessageSquare, Send, Globe, ChevronRight, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { WHATSAPP_LINK, WHATSAPP_NUMBER, OFFICIAL_EMAIL } from '../data';
+
+const WHATSAPP_CONTACT_NUMBER = '237672777657';
 
 const ContactPage: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -14,35 +16,45 @@ const ContactPage: React.FC = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const payload = {
-      localisation: formData.get('localisation') as string,
-      entreprise:   formData.get('entreprise')   as string,
-      whatsapp:     formData.get('whatsapp')      as string,
-      email:        formData.get('email')         as string,
-      budget:       formData.get('budget')        as string,
-      message:      formData.get('message')       as string,
-    };
+    const localisation = formData.get('localisation') as string;
+    const entreprise   = formData.get('entreprise')   as string;
+    const whatsapp     = formData.get('whatsapp')      as string;
+    const email        = formData.get('email')         as string;
+    const budget       = formData.get('budget')        as string;
+    const message      = formData.get('message')       as string;
 
     try {
-      // Appel vers la fonction serverless (Netlify ou Vercel)
-      const res = await fetch('/.netlify/functions/send-email', {
-        // Pour Vercel, remplacez par : '/api/send-email'
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      // ── Construction du message WhatsApp formaté ────────────────────────────
+      const waMessage = `🚀 *NOUVELLE DEMANDE DE CONSULTATION — IMANI-TECH*
 
-      const data = await res.json();
+━━━━━━━━━━━━━━━━━━━━━━
+🏢 *Entreprise :* ${entreprise}
+📍 *Localisation :* ${localisation}
+━━━━━━━━━━━━━━━━━━━━━━
 
-      if (res.ok && data.success) {
-        setStatus('success');
-        form.reset();
-      } else {
-        setErrorMsg(data.error || 'Erreur lors de l\'envoi.');
-        setStatus('error');
-      }
+📱 *WhatsApp :* ${whatsapp}
+✉️ *Email :* ${email}
+💰 *Budget :* ${budget || 'Non précisé'}
+
+━━━━━━━━━━━━━━━━━━━━━━
+💬 *Détails du projet :*
+${message}
+
+━━━━━━━━━━━━━━━━━━━━━━
+_Envoyé depuis le formulaire contact imani-tech.cm_`;
+
+      const encodedMsg = encodeURIComponent(waMessage);
+      const whatsappUrl = `https://wa.me/${WHATSAPP_CONTACT_NUMBER}?text=${encodedMsg}`;
+
+      // Ouvre WhatsApp dans un nouvel onglet
+      window.open(whatsappUrl, '_blank');
+
+      setStatus('success');
+      form.reset();
+
     } catch (err) {
-      setErrorMsg('Impossible de contacter le serveur. Vérifiez votre connexion.');
+      console.error(err);
+      setErrorMsg('Une erreur est survenue. Contactez-nous directement via WhatsApp.');
       setStatus('error');
     }
   };
@@ -69,19 +81,26 @@ const ContactPage: React.FC = () => {
 
             {status === 'success' ? (
               <div className="py-20 text-center animate-in zoom-in duration-500">
-                <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <CheckCircle size={40} />
+                <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+                  <CheckCircle size={44}/>
                 </div>
                 <h2 className="text-3xl font-black text-brand-stone uppercase tracking-tighter mb-4">Message Envoyé !</h2>
-                <p className="text-brand-stone/60 font-bold mb-4 max-w-md mx-auto">
-                  Votre demande a été transmise à notre équipe. Un consultant vous contactera sous 24h.
+                <p className="text-brand-stone/60 font-bold mb-3 max-w-md mx-auto">
+                  Votre demande a été transmise via WhatsApp. Un consultant vous répondra sous 24h.
                 </p>
                 <p className="text-brand-stone/40 font-bold text-sm mb-10 max-w-md mx-auto">
-                  📬 Confirmation envoyée à <strong className="text-brand-orange">{OFFICIAL_EMAIL}</strong>
+                  📲 Si WhatsApp ne s'est pas ouvert,{' '}
+                  <a
+                    href={`https://wa.me/${WHATSAPP_CONTACT_NUMBER}`}
+                    target="_blank" rel="noreferrer"
+                    className="text-brand-orange underline"
+                  >
+                    cliquez ici
+                  </a>
                 </p>
                 <button
                   onClick={() => setStatus('idle')}
-                  className="bg-brand-orange text-white px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs shadow-xl shadow-brand-orange/20"
+                  className="bg-brand-orange text-white px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs shadow-xl shadow-brand-orange/20 hover:bg-brand-stone transition-all"
                 >
                   Envoyer un autre message
                 </button>
@@ -159,7 +178,7 @@ const ContactPage: React.FC = () => {
                   <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-2xl p-4">
                     <AlertCircle size={18} className="text-red-500 shrink-0"/>
                     <p className="text-red-600 text-xs font-bold uppercase tracking-tight">
-                      {errorMsg || 'Une erreur est survenue. Réessayez ou contactez-nous via WhatsApp.'}
+                      {errorMsg}
                     </p>
                   </div>
                 )}
@@ -175,6 +194,13 @@ const ContactPage: React.FC = () => {
                     : <>Envoyer ma demande <Send className="ml-3" size={20}/></>
                   }
                 </button>
+
+                {/* Sécurité */}
+                <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-brand-stone/25">
+                  <MessageSquare size={11} className="text-green-500"/>
+                  <span>Envoi direct sur WhatsApp · +237 672 777 657</span>
+                </div>
+
               </form>
             )}
           </div>
