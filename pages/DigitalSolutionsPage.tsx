@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Target, Zap, MessageSquare, Search, BarChart3, Settings, ChevronRight, Phone, Send, ShieldCheck, Globe, X, CheckCircle2, TrendingUp, Cpu, Layout, Workflow, Rocket, PenTool, Smartphone, Database } from 'lucide-react';
 import { Link } from 'react-router-dom';
