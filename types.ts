@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 export interface ServiceCardProps {
@@ -51,7 +50,3 @@ export enum AppRoute {
   Contact = '/contact',
   Audit = '/audit-strategique'
 }
-
-
-
-
