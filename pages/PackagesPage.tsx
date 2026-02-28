@@ -47,6 +47,204 @@ const AnimatedNumber: React.FC<{ target: number; suffix?: string; inView: boolea
   return <>{count}{suffix}</>;
 };
 
+// ─── Fond spatial animé (Canvas) ─────────────────────────────────────────────
+const SpaceBackground: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId: number;
+    let t = 0;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Génère les étoiles une seule fois
+    const STARS = Array.from({ length: 180 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 1.5 + 0.3,
+      speed: Math.random() * 0.00008 + 0.00002,
+      opacity: Math.random() * 0.7 + 0.2,
+      twinkleOffset: Math.random() * Math.PI * 2,
+    }));
+
+    // Particules flottantes (points lumineux colorés)
+    const PARTICLES = Array.from({ length: 40 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.00015,
+      vy: (Math.random() - 0.5) * 0.00015,
+      r: Math.random() * 2.5 + 0.8,
+      color: ['#E87722', '#FF6B35', '#4FC3F7', '#A78BFA', '#34D399'][Math.floor(Math.random() * 5)],
+      opacity: Math.random() * 0.6 + 0.2,
+    }));
+
+    // Lignes de grille en perspective
+    const GRID_LINES = 12;
+
+    const draw = () => {
+      const W = canvas.width;
+      const H = canvas.height;
+      t += 0.012;
+
+      // Fond dégradé noir/bleu profond
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#050814');
+      bg.addColorStop(0.5, '#0a0f2e');
+      bg.addColorStop(1, '#060c1a');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // ── Nébuleuses (blobs lumineux flous) ──
+      const nebulae = [
+        { x: 0.15, y: 0.25, r: 0.35, color: '#1a1060', alpha: 0.5 },
+        { x: 0.75, y: 0.6,  r: 0.3,  color: '#0d2a1a', alpha: 0.4 },
+        { x: 0.5,  y: 0.15, r: 0.25, color: '#1a0a08', alpha: 0.35 },
+        { x: 0.85, y: 0.1,  r: 0.2,  color: '#0a1535', alpha: 0.45 },
+      ];
+      nebulae.forEach(n => {
+        const pulse = 1 + Math.sin(t * 0.3 + n.x * 5) * 0.08;
+        const grad = ctx.createRadialGradient(
+          n.x * W, n.y * H, 0,
+          n.x * W, n.y * H, n.r * W * pulse
+        );
+        grad.addColorStop(0, n.color + 'cc');
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.globalAlpha = n.alpha;
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = 1;
+      });
+
+      // ── Grille perspective (effet sol numérique) ──
+      ctx.save();
+      ctx.globalAlpha = 0.06;
+      ctx.strokeStyle = '#4FC3F7';
+      ctx.lineWidth = 0.5;
+      const gridShift = (t * 0.015) % (1 / GRID_LINES);
+      // Lignes horizontales fuyantes
+      for (let i = 0; i <= GRID_LINES; i++) {
+        const yRatio = (i / GRID_LINES + gridShift) % 1;
+        const perspective = Math.pow(yRatio, 2);
+        const yPos = H * 0.6 + perspective * H * 0.4;
+        const xSpread = perspective * W * 0.8;
+        ctx.beginPath();
+        ctx.moveTo(W / 2 - xSpread, yPos);
+        ctx.lineTo(W / 2 + xSpread, yPos);
+        ctx.stroke();
+      }
+      // Lignes verticales fuyantes
+      for (let i = -GRID_LINES / 2; i <= GRID_LINES / 2; i++) {
+        ctx.beginPath();
+        ctx.moveTo(W / 2 + i * (W / GRID_LINES) * 0.6, H * 0.6);
+        ctx.lineTo(W / 2 + i * W * 0.25, H);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // ── Étoiles scintillantes ──
+      STARS.forEach(s => {
+        const twinkle = 0.4 + 0.6 * Math.abs(Math.sin(t * 0.8 + s.twinkleOffset));
+        ctx.beginPath();
+        ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${s.opacity * twinkle})`;
+        ctx.fill();
+
+        // Halo sur les grandes étoiles
+        if (s.r > 1.2) {
+          const halo = ctx.createRadialGradient(s.x * W, s.y * H, 0, s.x * W, s.y * H, s.r * 6);
+          halo.addColorStop(0, `rgba(200,220,255,${0.15 * twinkle})`);
+          halo.addColorStop(1, 'transparent');
+          ctx.fillStyle = halo;
+          ctx.beginPath();
+          ctx.arc(s.x * W, s.y * H, s.r * 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      // ── Particules colorées flottantes ──
+      PARTICLES.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = 1;
+        if (p.x > 1) p.x = 0;
+        if (p.y < 0) p.y = 1;
+        if (p.y > 1) p.y = 0;
+
+        const pulse = 0.5 + 0.5 * Math.sin(t * 1.5 + p.x * 10);
+        const halo = ctx.createRadialGradient(p.x * W, p.y * H, 0, p.x * W, p.y * H, p.r * 8);
+        halo.addColorStop(0, p.color + 'aa');
+        halo.addColorStop(1, 'transparent');
+        ctx.fillStyle = halo;
+        ctx.globalAlpha = p.opacity * pulse;
+        ctx.beginPath();
+        ctx.arc(p.x * W, p.y * H, p.r * 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        ctx.beginPath();
+        ctx.arc(p.x * W, p.y * H, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      });
+
+      // ── Lignes de connexion entre particules proches ──
+      ctx.globalAlpha = 0.12;
+      ctx.strokeStyle = '#4FC3F7';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < PARTICLES.length; i++) {
+        for (let j = i + 1; j < PARTICLES.length; j++) {
+          const dx = (PARTICLES[i].x - PARTICLES[j].x) * W;
+          const dy = (PARTICLES[i].y - PARTICLES[j].y) * H;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.globalAlpha = 0.12 * (1 - dist / 120);
+            ctx.moveTo(PARTICLES[i].x * W, PARTICLES[i].y * H);
+            ctx.lineTo(PARTICLES[j].x * W, PARTICLES[j].y * H);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      // ── Scan line animée ──
+      const scanY = (((t * 0.04) % 1) * H);
+      const scanGrad = ctx.createLinearGradient(0, scanY - 60, 0, scanY + 60);
+      scanGrad.addColorStop(0, 'transparent');
+      scanGrad.addColorStop(0.5, 'rgba(79,195,247,0.04)');
+      scanGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = scanGrad;
+      ctx.fillRect(0, scanY - 60, W, 120);
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full"
+      style={{ display: 'block' }}
+    />
+  );
+};
+
 // ─── Tous les packages (anciens + nouveaux) ───────────────────────────────────
 // On utilise "any" pour éviter les conflits de types avec l'interface Package existante
 const EXTRA_PACKAGES: any[] = [
@@ -460,28 +658,24 @@ const PackagesPage: React.FC = () => {
       <div className="bg-brand-cream min-h-screen pt-24">
 
         {/* ── HERO ─────────────────────────────────────────────────────── */}
-        <section className="relative bg-white border-b border-brand-sand overflow-hidden">
-          <div className="absolute inset-0 opacity-[0.025]"
-            style={{ backgroundImage: 'linear-gradient(#1a1a1a 1px,transparent 1px),linear-gradient(90deg,#1a1a1a 1px,transparent 1px)', backgroundSize: '50px 50px' }} />
-          <div className="absolute top-16 right-16 w-80 h-80 rounded-full opacity-10 orb1"
-            style={{ background: 'radial-gradient(circle, #E87722, transparent)' }} />
-          <div className="absolute bottom-8 left-8 w-56 h-56 rounded-full opacity-8 orb2"
-            style={{ background: 'radial-gradient(circle, #2563EB, transparent)' }} />
+        <section className="relative border-b border-brand-sand/20 overflow-hidden" style={{ background: '#050814' }}>
+          {/* Fond spatial Canvas */}
+          <SpaceBackground />
 
           <div className="max-w-7xl mx-auto px-4 py-20 sm:py-28 relative z-10">
-            <div className="hw0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-orange/10 border border-brand-orange/20 mb-8">
+            <div className="hw0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-orange/20 border border-brand-orange/30 mb-8">
               <Zap size={11} className="text-brand-orange" />
               <span className="text-[9px] font-black uppercase tracking-[0.35em] text-brand-orange">
                 {ALL_PACKAGES.length} Solutions Adaptées au Marché Camerounais
               </span>
             </div>
 
-            <h1 className="hw1 text-5xl sm:text-7xl lg:text-[90px] font-black uppercase tracking-tighter leading-[0.88] text-brand-stone mb-6">
+            <h1 className="hw1 text-5xl sm:text-7xl lg:text-[90px] font-black uppercase tracking-tighter leading-[0.88] text-white mb-6">
               Nos <span className="text-brand-orange">Packages</span><br />
-              <span className="text-brand-stone/15">Stratégiques</span>
+              <span className="text-white/15">Stratégiques</span>
             </h1>
 
-            <p className="hw2 text-base sm:text-lg text-brand-stone/45 font-bold leading-relaxed max-w-xl mb-10">
+            <p className="hw2 text-base sm:text-lg text-white/40 font-bold leading-relaxed max-w-xl mb-10">
               Chaque package est un dossier complet avec objectifs, plan de déploiement, ROI chiffré et garantie de résultat. Cliquez pour l'ouvrir.
             </p>
 
@@ -491,7 +685,7 @@ const PackagesPage: React.FC = () => {
                 { icon: <Clock size={14} />, t: 'Déploiement rapide' },
                 { icon: <Users size={14} />, t: 'Équipe locale' },
               ].map((b, i) => (
-                <div key={i} className="flex items-center gap-2 text-brand-stone/35">
+                <div key={i} className="flex items-center gap-2 text-white/30">
                   <span className="text-brand-orange">{b.icon}</span>
                   <span className="text-[10px] font-black uppercase tracking-widest">{b.t}</span>
                 </div>
@@ -499,7 +693,7 @@ const PackagesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="absolute bottom-6 right-6 hidden lg:block text-brand-stone/6 font-black text-[120px] leading-none select-none">
+          <div className="absolute bottom-6 right-6 hidden lg:block text-white/5 font-black text-[120px] leading-none select-none z-10">
             {ALL_PACKAGES.length}
           </div>
         </section>
@@ -528,8 +722,12 @@ const PackagesPage: React.FC = () => {
         </div>
 
         {/* ── GRILLE ──────────────────────────────────────────────────── */}
-        <section className="py-16 px-4">
-          <div className="max-w-7xl mx-auto">
+        <section className="py-16 px-4 relative overflow-hidden" style={{ background: '#06080f' }}>
+          {/* Fond spatial derrière les cartes */}
+          <SpaceBackground />
+          {/* Overlay léger pour lisibilité des cartes */}
+          <div className="absolute inset-0 z-[1]" style={{ background: 'rgba(6,8,15,0.55)' }} />
+          <div className="max-w-7xl mx-auto relative z-[2]">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((pkg: any, i: number) => (
                 <PackageCard key={pkg.id} pkg={pkg} index={i} onOpen={setSelectedPkg} />
