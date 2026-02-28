@@ -1,258 +1,183 @@
+
 import React, { useState } from 'react';
+import { Target, Zap, MessageSquare, Search, BarChart3, Settings, ChevronRight, Phone, Send, ShieldCheck, Globe, X, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import {
-  CheckCircle, ShieldCheck, Zap, ArrowRight, Loader2,
-  Calendar, Globe, Mail, AlertCircle
-} from 'lucide-react';
-import { generateAuditSummary } from '../services/geminiService';
-import { SITE_NAME, WHATSAPP_LINK, OFFICIAL_EMAIL } from '../data';
+import { AppRoute } from '../types';
+import { DIGITAL_SERVICES, WHATSAPP_LINK } from '../data';
 
-const AuditLanding: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [result,  setResult]  = useState<string | null>(null);
-  const [error,   setError]   = useState<string>('');
-  const [form,    setForm]    = useState({
-    name: '', company: '', email: '', phone: '', objective: '',
-  });
+const iconMap: Record<string, React.ReactNode> = {
+  'Target': <Target size={28} />,
+  'Zap': <Zap size={28} />,
+  'MessageSquare': <MessageSquare size={28} />,
+  'Search': <Search size={28} />,
+  'BarChart': <BarChart3 size={28} />,
+  'Settings': <Settings size={28} />
+};
 
-  const WHATSAPP_AUDIT_NUMBER = '237672777657';
+const DigitalSolutionsPage: React.FC = () => {
+  const [selectedService, setSelectedService] = useState<typeof DIGITAL_SERVICES[0] | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  const closeModal = () => setSelectedService(null);
 
-    try {
-      // ── 1. Générer le résumé IA ──────────────────────────────────────────────
-      const feedback = await generateAuditSummary({
-        company: `${form.name} — ${form.company}`,
-        needs:   [form.objective],
-      });
-
-      setResult(feedback);
-
-      // ── 2. Ouvrir WhatsApp avec les données du formulaire pré-remplies ───────
-      const message = ` *DEMANDE D'AUDIT TECHNIQUE — IMANI-TECH*
-
-━━━━━━━━━━━━━━━━━━━━━━
- *Nom :* ${form.name}
- *Structure :* ${form.company}
-━━━━━━━━━━━━━━━━━━━━━━
-
- *Email :* ${form.email}
- *WhatsApp :* ${form.phone}
-
-━━━━━━━━━━━━━━━━━━━━━━
- *Défi / Objectif :*
-${form.objective}
-
-━━━━━━━━━━━━━━━━━━━━━━
-_Envoyé depuis le formulaire d'audit imani-tech.cm_`;
-
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${WHATSAPP_AUDIT_NUMBER}?text=${encodedMessage}`;
-
-      // Ouvre WhatsApp dans un nouvel onglet
-      window.open(whatsappUrl, '_blank');
-
-    } catch (err) {
-      console.error(err);
-      setError('Une erreur est survenue. Réessayez ou contactez-nous directement.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ── Écran résultat ──────────────────────────────────────────────────────────
-  if (result) {
-    return (
-      <div className="min-h-screen bg-brand-cream flex items-center justify-center py-20 px-4 page-appear">
-        <div className="max-w-2xl w-full bg-white p-10 sm:p-16 rounded-[3rem] shadow-2xl animate-in zoom-in duration-500 border border-brand-sand relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-brand-orange/5 blur-3xl rounded-full"/>
-
-          <div className="text-center mb-10 relative z-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-brand-orange text-white rounded-2xl mb-8 shadow-2xl shadow-brand-orange/20">
-              <ShieldCheck size={40}/>
-            </div>
-            <h1 className="text-4xl font-black text-brand-stone uppercase tracking-tighter leading-none">
-              Diagnostic <br/><span className="text-brand-orange">Enregistré !</span>
-            </h1>
-          </div>
-
-          <div className="mb-8 bg-brand-beige p-6 rounded-2xl border border-brand-sand/50 flex items-center space-x-4">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-brand-orange shadow-sm border border-brand-sand shrink-0">
-              <Mail size={20}/>
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-brand-stone/40">Notification Experts</p>
-              <p className="text-xs font-bold text-brand-stone">
-                Copie transmise à <strong className="text-brand-orange">{OFFICIAL_EMAIL}</strong>
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-brand-orange/5 border-l-8 border-brand-orange p-8 mb-10 rounded-r-[2rem] relative z-10">
-            <h3 className="font-black text-brand-orange mb-4 flex items-center text-xs uppercase tracking-[0.2em]">
-              <Zap size={16} className="mr-2"/> Note Stratégique IA
-            </h3>
-            <p className="text-brand-stone text-base sm:text-lg leading-relaxed font-bold">{result}</p>
-          </div>
-
-          <div className="text-center relative z-10">
-            <p className="text-brand-stone/40 mb-10 font-black uppercase text-xs tracking-widest">
-              Session expert confirmée pour le <span className="text-brand-stone">{form.phone}</span>.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/" className="inline-flex items-center justify-center bg-brand-stone text-white px-10 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:bg-brand-orange transition-all shadow-xl shadow-brand-stone/20">
-                Retour au site <ArrowRight size={14} className="ml-2"/>
-              </Link>
-              <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer"
-                className="inline-flex items-center justify-center bg-green-500 text-white px-10 py-4 rounded-full font-black text-sm uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-green-500/10">
-                Besoin d'aide ?
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Formulaire ──────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-brand-cream text-brand-stone font-inter page-appear">
-
-      <nav className="p-8 border-b border-brand-sand bg-brand-beige sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-brand-orange rounded-lg flex items-center justify-center font-black text-white text-xl group-hover:bg-brand-stone transition-colors shadow-md">I</div>
-            <span className="text-xl font-black tracking-tighter uppercase">
-              IMANI-TECH <span className="text-brand-orange">SOLUTIONS</span>
-            </span>
-          </Link>
-          <div className="hidden sm:flex items-center space-x-2 text-[10px] font-black uppercase text-brand-stone/40 tracking-[0.2em]">
-            <Globe size={14} className="text-brand-orange"/>
-            <span>Consultation Élite 237</span>
-          </div>
-        </div>
-      </nav>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-center">
-
-        <div className="text-center lg:text-left animate-in fade-in duration-700">
-          <div className="inline-block px-4 py-1.5 bg-brand-orange/10 border border-brand-orange/20 text-brand-orange text-[10px] font-black rounded-full mb-10 uppercase tracking-[0.2em] shadow-sm">
-            Expertise Nationale Certifiée
-          </div>
-          <h1 className="text-5xl sm:text-7xl font-black mb-10 leading-[0.9] uppercase tracking-tighter text-brand-stone">
-            Libérez votre <br/><span className="text-brand-orange">Potentiel</span> <br/>de Croissance
-          </h1>
-          <p className="text-xl sm:text-2xl text-brand-stone/70 mb-12 leading-tight font-bold">
-            Identifiez les barrières qui bloquent vos ventes et obtenez un plan d'action d'élite.
+    <div className="bg-brand-beige min-h-screen page-appear">
+      {/* Editorial Hero */}
+      <section className="bg-white py-32 px-4 relative overflow-hidden border-b border-brand-sand animate-in fade-in duration-700">
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <span className="text-brand-orange font-black uppercase tracking-[0.3em] text-[10px] mb-6 block">Acquisition & Performance</span>
+          <h1 className="text-5xl md:text-8xl font-black mb-8 uppercase tracking-tighter leading-[0.9] text-brand-stone">Solutions <br /><span className="text-brand-orange">Digitales</span></h1>
+          <p className="text-xl text-brand-stone/60 max-w-2xl mx-auto font-bold leading-relaxed">
+            Cliquez sur nos services pour explorer comment nous bâtissons des moteurs de croissance qui dominent le marché camerounais.
           </p>
-          <div className="space-y-8 text-left max-w-lg mx-auto lg:mx-0">
-            {[
-              'Audit approfondi de votre écosystème digital.',
-              'Benchmark concurrentiel spécifique au Cameroun.',
-              "Plan d'action prioritaire sous 30 jours.",
-              'Analyse de rentabilité et objectifs ROI.',
-            ].map((text, i) => (
-              <div key={i} className="flex items-start space-x-5 group">
-                <div className="shrink-0 mt-1">
-                  <CheckCircle className="text-brand-orange group-hover:scale-110 transition-transform" size={28}/>
+        </div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-orange/5 blur-[120px] rounded-full"></div>
+      </section>
+
+      {/* Services Grid Section */}
+      <section className="py-24 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+            {DIGITAL_SERVICES.map((service, index) => (
+              <div 
+                key={index} 
+                onClick={() => setSelectedService(service)}
+                className="bg-white rounded-[3rem] border border-brand-sand hover:border-brand-orange transition-all group flex flex-col shadow-sm hover:shadow-2xl hover:-translate-y-2 duration-500 cursor-pointer overflow-hidden animate-in zoom-in duration-500"
+              >
+                {/* Illustrative Image */}
+                <div className="h-56 relative overflow-hidden">
+                   <img 
+                    src={service.imageUrl} 
+                    alt={service.title} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                   />
+                   <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+                   <div className="absolute top-6 left-6 w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center text-brand-orange shadow-lg border border-white/50">
+                     {iconMap[service.iconName]}
+                   </div>
                 </div>
-                <p className="text-lg text-brand-stone font-black uppercase tracking-tight leading-tight">{text}</p>
+
+                <div className="p-10 pt-4 flex flex-col flex-grow">
+                  <h3 className="text-2xl font-black text-brand-stone uppercase tracking-tighter mb-4 group-hover:text-brand-orange transition-colors">
+                    {service.title}
+                  </h3>
+                  
+                  <p className="text-brand-stone/60 font-bold text-sm leading-relaxed mb-6 flex-grow">
+                    {service.description}
+                  </p>
+
+                  <div className="mb-8">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-orange border-b-2 border-brand-orange/20 pb-1">Explorer la stratégie</span>
+                  </div>
+                  
+                  <div className="space-y-3 pt-6 border-t border-brand-sand/50" onClick={(e) => e.stopPropagation()}>
+                    <Link 
+                      to={AppRoute.Contact} 
+                      className="flex items-center justify-between w-full bg-brand-stone text-white px-6 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-brand-orange transition-all"
+                    >
+                      <span>Demander un devis</span>
+                      <Send size={14} />
+                    </Link>
+                    <a 
+                      href={WHATSAPP_LINK} 
+                      target="_blank" 
+                      className="flex items-center justify-between w-full bg-brand-beige text-brand-stone border border-brand-sand px-6 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white transition-all"
+                    >
+                      <span>Parler à un consultant</span>
+                      <Phone size={14} />
+                    </a>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        <div className="bg-white p-10 sm:p-16 rounded-[3rem] shadow-2xl border border-brand-sand relative overflow-hidden animate-in zoom-in duration-700">
-          <div className="absolute bottom-0 right-0 w-64 h-64 bg-brand-orange/5 blur-[100px] rounded-full"/>
-
-          <h2 className="text-3xl font-black mb-12 text-center uppercase tracking-tighter flex items-center justify-center text-brand-stone">
-            <Calendar className="mr-4 text-brand-orange" size={28}/> Session de Diagnostic
-          </h2>
-
-          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Nom Complet</label>
-              <input required type="text" value={form.name}
-                onChange={e => setForm({ ...form, name: e.target.value })}
-                placeholder="Ex: Marc Atangana"
-                className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
-              />
-            </div>
-
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Structure & Localisation</label>
-              <input required type="text" value={form.company}
-                onChange={e => setForm({ ...form, company: e.target.value })}
-                placeholder="Ex: Crystal Akwa Sarl — Yaoundé"
-                className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Email Pro</label>
-                <input required type="email" value={form.email}
-                  onChange={e => setForm({ ...form, email: e.target.value })}
-                  placeholder="contact@domain.cm"
-                  className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
-                />
-              </div>
-              <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">WhatsApp</label>
-                <input required type="tel" value={form.phone}
-                  onChange={e => setForm({ ...form, phone: e.target.value })}
-                  placeholder="+237 6..."
-                  className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold transition-all placeholder:text-brand-stone/30"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-stone/40 ml-1">Quel est votre défi majeur ?</label>
-              <textarea required value={form.objective}
-                onChange={e => setForm({ ...form, objective: e.target.value })}
-                rows={3} placeholder="Expliquez-nous brièvement vos attentes..."
-                className="w-full bg-brand-cream border border-brand-sand p-5 rounded-xl focus:border-brand-orange focus:bg-white focus:outline-none text-sm font-bold resize-none transition-all placeholder:text-brand-stone/30"
-              />
-            </div>
-
-            {error && (
-              <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-2xl p-4">
-                <AlertCircle size={16} className="text-red-500 shrink-0"/>
-                <p className="text-red-600 text-xs font-bold">{error}</p>
-              </div>
-            )}
-
-            <button disabled={loading} type="submit"
-              className="w-full bg-brand-orange hover:bg-brand-stone text-white py-6 rounded-xl font-black text-xl transition-all shadow-xl shadow-brand-orange/30 flex items-center justify-center disabled:opacity-50 mt-4 uppercase tracking-tighter"
+      {/* Detail Modal */}
+      {selectedService && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-brand-stone/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl relative overflow-hidden animate-in zoom-in duration-500 max-h-[90vh] overflow-y-auto">
+            <button 
+              onClick={closeModal}
+              className="absolute top-8 right-8 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-brand-stone hover:bg-brand-orange hover:text-white transition-all z-20 shadow-xl border border-white/50"
             >
-              {loading
-                ? <><Loader2 className="animate-spin mr-3" size={22}/> Analyse en cours...</>
-                : 'Réclamer mon Audit National'
-              }
+              <X size={24} />
             </button>
 
-            <div className="flex items-center justify-center space-x-2 text-[9px] font-black uppercase tracking-[0.2em] text-brand-stone/30">
-              <ShieldCheck size={12} className="text-brand-orange"/>
-              <span>Envoi sécurisé via Resend · imanitechsolutions237@gmail.com</span>
+            {/* Modal Image Header */}
+            <div className="h-64 relative">
+               <img 
+                 src={selectedService.imageUrl} 
+                 alt={selectedService.title} 
+                 className="w-full h-full object-cover"
+               />
+               <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent"></div>
+               <div className="absolute -bottom-8 left-12 w-20 h-20 bg-brand-orange text-white rounded-[2rem] flex items-center justify-center shadow-2xl border-4 border-white">
+                 {iconMap[selectedService.iconName]}
+               </div>
             </div>
-          </form>
-        </div>
-      </div>
 
-      <div className="py-12 border-t border-brand-sand text-center text-brand-stone/30 text-[10px] font-black uppercase tracking-[0.3em] bg-brand-beige">
-        {SITE_NAME} | LEADERSHIP DIGITAL NATIONAL
-      </div>
+            <div className="p-10 sm:p-16 pt-16">
+              <h2 className="text-4xl sm:text-5xl font-black text-brand-stone uppercase tracking-tighter leading-none mb-6">
+                {selectedService.title}
+              </h2>
+
+              <p className="text-xl text-brand-stone/70 font-bold leading-relaxed mb-10">
+                {selectedService.details}
+              </p>
+
+              <div className="space-y-6 mb-12">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Inclus dans la stratégie :</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {selectedService.points?.map((point, i) => (
+                    <div key={i} className="flex items-start space-x-3 bg-brand-beige/50 p-4 rounded-2xl border border-brand-sand/50">
+                      <CheckCircle2 className="text-brand-orange shrink-0 mt-0.5" size={18} />
+                      <span className="text-[11px] font-black uppercase tracking-tight text-brand-stone/80">{point}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-10 border-t border-brand-sand/40">
+                <Link 
+                  to={AppRoute.Contact} 
+                  onClick={closeModal}
+                  className="flex-1 bg-brand-stone text-white text-center py-6 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-orange transition-all shadow-xl shadow-brand-stone/20"
+                >
+                  Démarrer mon projet
+                </Link>
+                <a 
+                  href={WHATSAPP_LINK} 
+                  target="_blank" 
+                  className="flex-1 bg-brand-orange text-white text-center py-6 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-stone transition-all shadow-xl shadow-brand-orange/20"
+                >
+                  Besoin d'infos ?
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Proof Section */}
+      <section className="py-24 bg-brand-stone text-white overflow-hidden relative border-y border-brand-orange/20 mx-4 sm:mx-8 rounded-[4rem] mb-24 animate-in fade-in duration-1000">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+           <div className="absolute top-0 right-0 p-20"><Globe size={300} /></div>
+        </div>
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-brand-orange text-[9px] font-black uppercase tracking-[0.2em] mb-8">
+              <ShieldCheck size={12} />
+              <span>Standard de Qualité Imani</span>
+           </div>
+           <h2 className="text-4xl md:text-6xl font-black mb-10 uppercase tracking-tighter leading-none">Votre business mérite une <br /> <span className="text-brand-orange">infrastructure d'élite</span>.</h2>
+           <p className="text-lg text-brand-sand/40 mb-12 font-bold uppercase tracking-wide">Chaque seconde sans optimisation est un client perdu pour vos concurrents.</p>
+           <Link to={AppRoute.Audit} className="bg-brand-orange text-white px-12 py-6 rounded-full font-black text-xl hover:bg-white hover:text-brand-stone transition-all shadow-2xl shadow-brand-orange/30 inline-flex items-center uppercase tracking-tighter">
+              Lancer mon Diagnostic <ChevronRight className="ml-2" />
+           </Link>
+        </div>
+      </section>
     </div>
   );
 };
 
-export default AuditLanding;
-
-
-
-
+export default DigitalSolutionsPage;
