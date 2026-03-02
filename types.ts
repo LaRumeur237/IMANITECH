@@ -48,5 +48,6 @@ export enum AppRoute {
   About = '/a-propos',
   Blog = '/blog',
   Contact = '/contact',
+  Shop = '/boutique',
   Audit = '/audit-strategique'
 }

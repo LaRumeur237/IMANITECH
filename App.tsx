@@ -11,6 +11,7 @@ import DigitalSolutionsPage from './pages/DigitalSolutionsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import AuditLanding from './pages/AuditLanding';
+import ShopPage from './pages/ShopPage';
 import { AppRoute } from './types';
 
 // Composant pour forcer le retour en haut de page sans défilement visible
@@ -40,6 +41,7 @@ const App: React.FC = () => {
           <Route path={AppRoute.DigitalSolutions} element={<DigitalSolutionsPage />} />
           <Route path={AppRoute.About} element={<AboutPage />} />
           <Route path={AppRoute.Contact} element={<ContactPage />} />
+          <Route path={AppRoute.Shop} element={<ShopPage />} />
         </Route>
       </Routes>
     </Router>
