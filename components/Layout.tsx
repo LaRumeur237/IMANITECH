@@ -684,7 +684,7 @@ const AIAssistant: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-24 lg:bottom-8 right-4 sm:right-8 z-[60] flex flex-col items-end">
+    <div className="fixed bottom-24 lg:bottom-8 right-4 sm:right-8 z-[150] flex flex-col items-end">
       {isOpen && (
         <div className="w-[calc(100vw-2rem)] sm:w-[380px] max-h-[70vh] sm:max-h-none sm:h-[600px] bg-white rounded-[1.5rem] sm:rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] flex flex-col mb-4 overflow-hidden border border-brand-sand/50"
           style={{ animation: 'slideInUp 0.45s cubic-bezier(0.22,1,0.36,1) both' }}
@@ -821,3 +821,4 @@ const Layout: React.FC = () => {
 };
 
 export default Layout;
+

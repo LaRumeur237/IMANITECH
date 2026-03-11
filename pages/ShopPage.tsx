@@ -108,12 +108,10 @@ const CartDrawer: React.FC<{
   const count = cart.reduce((a, i) => a + i.qty, 0);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-[100] flex justify-end">
+    <div className="fixed inset-0 z-[999] flex justify-end">
       <div className="absolute inset-0 bg-brand-stone/80 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white w-full sm:w-[420px] md:w-[480px] h-full flex flex-col shadow-2xl"
         style={{ animation: 'slideInFromRight 0.3s cubic-bezier(0.32,0.72,0,1) both' }}>
-
-        {/* Header */}
         <div className="bg-brand-stone text-white shrink-0">
           <div className="flex items-center justify-between p-4 sm:p-5 border-b-4 border-brand-orange">
             <div>
@@ -134,8 +132,6 @@ const CartDrawer: React.FC<{
             </div>
           )}
         </div>
-
-        {/* Articles scrollables */}
         <div className="flex-grow overflow-y-auto overscroll-contain">
           {cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center gap-4 p-8">
@@ -160,7 +156,6 @@ const CartDrawer: React.FC<{
                   <div className="flex-grow min-w-0">
                     <p className="text-[9px] font-black text-brand-orange uppercase tracking-wide mb-0.5">{item.product.brand}</p>
                     <p className="text-[10px] sm:text-[11px] font-black text-brand-stone uppercase tracking-tight leading-tight line-clamp-2 mb-1.5">{item.product.name}</p>
-                    <p className="text-[9px] text-brand-stone/40 uppercase font-bold mb-2">{item.category}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-black text-brand-stone">{fmt(item.product.price * item.qty)}</span>
                       <div className="flex items-center gap-1 bg-brand-beige rounded-full px-1 py-0.5">
@@ -181,8 +176,6 @@ const CartDrawer: React.FC<{
             </div>
           )}
         </div>
-
-        {/* Footer CTA — toujours visible */}
         {cart.length > 0 && (
           <div className="shrink-0 bg-white border-t border-brand-sand p-4 sm:p-5 space-y-3">
             <div className="flex items-center justify-between">
@@ -194,12 +187,6 @@ const CartDrawer: React.FC<{
                 <p className="text-[8px] font-bold text-brand-stone/30 uppercase">Livraison</p>
                 <p className="text-[10px] font-black text-brand-orange">À calculer</p>
               </div>
-            </div>
-            <div className="flex items-center gap-2 bg-brand-orange/5 rounded-xl px-3 py-2 border border-brand-orange/15">
-              <Truck size={13} className="text-brand-orange shrink-0" />
-              <p className="text-[9px] font-bold text-brand-stone/60 leading-snug">
-                Livraison dans les <strong className="text-brand-stone">10 régions du Cameroun</strong>
-              </p>
             </div>
             <button onClick={onCheckout}
               className="w-full bg-brand-orange text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-brand-stone transition-all shadow-xl shadow-brand-orange/25 flex items-center justify-center gap-2 active:scale-95">
@@ -215,7 +202,7 @@ const CartDrawer: React.FC<{
   );
 };
 
-// ─── CHECKOUT ─────────────────────────────────────────────────────────────────
+// ─── CHECKOUT MODAL OPTIMISÉ (layout fixe sans scroll forcé) ─────────────────
 const CheckoutModal: React.FC<{
   open: boolean; cart: CartItem[]; total: number; onClose: () => void;
 }> = ({ open, cart, total, onClose }) => {
@@ -240,11 +227,11 @@ const CheckoutModal: React.FC<{
     `*Code transaction :* ${txCode}`,
     `━━━━━━━━━━━━━━━━━━━━━`,
     `*ARTICLES :*`,
-    ...cart.map(i => `• ${i.product.name} ×${i.qty} — ${fmt(i.product.price * i.qty)}`),
+    ...cart.map(i => `• ${i.product.name} ×${i.qty} – ${fmt(i.product.price * i.qty)}`),
     `━━━━━━━━━━━━━━━━━━━━━`,
     `*TOTAL :* ${fmt(total)}`,
     deliveryMode === 'livraison'
-      ? `*Livraison :* Région ${region} — ${ville}\n*Adresse :* ${adresse}`
+      ? `*Livraison :* Région ${region} – ${ville}\n*Adresse :* ${adresse}`
       : `*Livraison :* Retrait siège Imani-Tech (Yaoundé)`,
   ].join('\n'));
 
@@ -252,11 +239,18 @@ const CheckoutModal: React.FC<{
   const canStep2 = deliveryMode === 'retrait' || (!!region && !!ville && !!adresse);
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center sm:p-4 bg-brand-stone/90 backdrop-blur-md">
-      <div className="bg-white w-full sm:max-w-lg rounded-t-[2rem] sm:rounded-[2.5rem] shadow-2xl max-h-[96vh] flex flex-col overflow-hidden"
-        style={{ animation: 'slideInFromBottom 0.35s cubic-bezier(0.32,0.72,0,1) both' }}>
+    <div className="fixed inset-0 z-[999] flex items-end sm:items-center justify-center sm:p-4 bg-brand-stone/90 backdrop-blur-md">
+      {/* Overlay cliquable */}
+      <div className="absolute inset-0" onClick={onClose} />
 
-        {/* Header + progress */}
+      <div className="relative bg-white w-full sm:max-w-lg rounded-t-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden"
+        style={{
+          maxHeight: '96vh',
+          height: 'auto',
+          animation: 'slideInFromBottom 0.35s cubic-bezier(0.32,0.72,0,1) both'
+        }}>
+
+        {/* ── HEADER sticky ── */}
         <div className="bg-brand-stone text-white shrink-0 border-b-4 border-brand-orange">
           <div className="flex items-center justify-between p-4 sm:p-5">
             <div>
@@ -286,19 +280,19 @@ const CheckoutModal: React.FC<{
           )}
         </div>
 
-        {/* Corps scrollable */}
-        <div className="flex-grow overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4">
+        {/* ── CORPS scrollable (seulement cette zone défile) ── */}
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4 min-h-0">
 
-          {/* ── DONE ── */}
+          {/* DONE */}
           {done && (
-            <div className="text-center space-y-5 py-6">
-              <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto border-4 border-green-200">
-                <Check size={36} className="text-green-500" />
+            <div className="text-center space-y-4 py-4">
+              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto border-4 border-green-200">
+                <Check size={28} className="text-green-500" />
               </div>
               <div>
-                <h3 className="text-xl font-black uppercase tracking-tighter text-brand-stone mb-2">Commande envoyée !</h3>
+                <h3 className="text-lg font-black uppercase tracking-tighter text-brand-stone mb-1">Commande envoyée !</h3>
                 <p className="text-brand-stone/60 font-medium text-sm leading-relaxed">
-                  Votre commande a été transmise sur WhatsApp. Notre équipe vous contacte dans les plus brefs délais pour confirmer et organiser la livraison dans votre région.
+                  Notre équipe vous contacte dans les plus brefs délais.
                 </p>
               </div>
               <div className="bg-brand-beige/60 p-4 rounded-2xl border border-brand-sand text-left space-y-1.5">
@@ -313,34 +307,32 @@ const CheckoutModal: React.FC<{
             </div>
           )}
 
-          {/* ── ÉTAPE 1 ── */}
+          {/* ÉTAPE 1 — Paiement */}
           {!done && step === 1 && (
             <>
-              <div className="bg-brand-beige/50 rounded-2xl border border-brand-sand overflow-hidden">
-                <div className="px-4 py-2.5 border-b border-brand-sand/50 flex justify-between">
+              {/* Récap commande compacte */}
+              <div className="bg-brand-beige/50 rounded-xl border border-brand-sand overflow-hidden">
+                <div className="px-3 py-2 border-b border-brand-sand/50 flex justify-between items-center">
                   <span className="text-[8px] font-black uppercase tracking-widest text-brand-orange">Votre commande</span>
-                  <span className="text-[8px] font-black text-brand-stone/40">{cart.reduce((a,i)=>a+i.qty,0)} article{cart.reduce((a,i)=>a+i.qty,0)>1?'s':''}</span>
+                  <span className="text-[8px] font-black text-brand-stone">{fmt(total)}</span>
                 </div>
-                <div className="max-h-28 overflow-y-auto divide-y divide-brand-sand/50">
+                <div className="max-h-24 overflow-y-auto divide-y divide-brand-sand/50">
                   {cart.map(i => (
-                    <div key={i.product.id} className="flex justify-between items-center px-4 py-2">
+                    <div key={i.product.id} className="flex justify-between items-center px-3 py-1.5">
                       <span className="text-[10px] font-bold text-brand-stone/70 truncate mr-3">{i.product.name} ×{i.qty}</span>
                       <span className="text-[10px] font-black text-brand-stone shrink-0">{fmt(i.product.price * i.qty)}</span>
                     </div>
                   ))}
                 </div>
-                <div className="px-4 py-2.5 bg-brand-stone/5 border-t border-brand-sand flex justify-between">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-brand-stone/40">Total</span>
-                  <span className="text-lg font-black text-brand-stone">{fmt(total)}</span>
-                </div>
               </div>
 
+              {/* Choix opérateur */}
               <div>
                 <p className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-2">1. Choisissez votre opérateur</p>
                 <div className="grid grid-cols-2 gap-2.5">
                   {(['mtn','orange'] as const).map(op => (
                     <button key={op} onClick={() => setPayMethod(op)}
-                      className={`p-3.5 rounded-2xl border-2 font-black text-[10px] uppercase tracking-wide flex flex-col items-center gap-2 transition-all active:scale-95 ${payMethod === op ? 'border-brand-orange bg-brand-orange/5 text-brand-orange' : 'border-brand-sand text-brand-stone/50 hover:border-brand-orange/50'}`}>
+                      className={`p-3 rounded-2xl border-2 font-black text-[10px] uppercase tracking-wide flex flex-col items-center gap-1.5 transition-all active:scale-95 ${payMethod === op ? 'border-brand-orange bg-brand-orange/5 text-brand-orange' : 'border-brand-sand text-brand-stone/50 hover:border-brand-orange/50'}`}>
                       <span className="text-2xl">{op === 'mtn' ? '🟡' : '🟠'}</span>
                       <span>{op === 'mtn' ? 'MTN MoMo' : 'Orange Money'}</span>
                       <span className="text-[8px] font-bold opacity-60 tracking-normal normal-case">{op === 'mtn' ? MTN_MOMO_NUMBER : ORANGE_MONEY_NUMBER}</span>
@@ -349,15 +341,17 @@ const CheckoutModal: React.FC<{
                 </div>
               </div>
 
-              <div className="bg-brand-orange/5 p-4 rounded-2xl border border-brand-orange/20">
-                <p className="text-[8px] font-black uppercase tracking-widest text-brand-orange mb-1.5">2. Effectuez le paiement</p>
+              {/* Instructions paiement */}
+              <div className="bg-brand-orange/5 p-3 rounded-xl border border-brand-orange/20">
+                <p className="text-[8px] font-black uppercase tracking-widest text-brand-orange mb-1">2. Effectuez le paiement</p>
                 <p className="text-[11px] font-medium text-brand-stone/70 leading-relaxed">
-                  Envoyez <strong className="text-brand-stone font-black">{fmt(total)}</strong> au numéro{' '}
+                  Envoyez <strong className="text-brand-stone font-black">{fmt(total)}</strong> au{' '}
                   <strong className="text-brand-orange">{payMethod === 'mtn' ? MTN_MOMO_NUMBER : ORANGE_MONEY_NUMBER}</strong>{' '}
-                  via {payMethod === 'mtn' ? 'MTN Mobile Money' : 'Orange Money'}, puis renseignez les informations ci-dessous.
+                  via {payMethod === 'mtn' ? 'MTN MoMo' : 'Orange Money'}.
                 </p>
               </div>
 
+              {/* Numéro payeur */}
               <div>
                 <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">3. Votre numéro de paiement</label>
                 <div className="relative">
@@ -369,8 +363,9 @@ const CheckoutModal: React.FC<{
                 </div>
               </div>
 
+              {/* Code transaction */}
               <div>
-                <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">4. Code de confirmation reçu par SMS</label>
+                <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">4. Code de confirmation SMS</label>
                 <input type="text" placeholder="Ex: MP241203.A12B.345678" value={txCode}
                   onChange={e => setTxCode(e.target.value)}
                   className="w-full px-4 py-3.5 rounded-2xl border-2 border-brand-sand focus:border-brand-orange outline-none font-black text-brand-stone text-sm bg-white transition-all" />
@@ -378,15 +373,15 @@ const CheckoutModal: React.FC<{
             </>
           )}
 
-          {/* ── ÉTAPE 2 ── */}
+          {/* ÉTAPE 2 — Livraison */}
           {!done && step === 2 && (
             <>
               <div>
-                <p className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-2.5">Mode de livraison</p>
+                <p className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-2">Mode de livraison</p>
                 <div className="grid grid-cols-2 gap-2.5">
                   {(['livraison','retrait'] as const).map(mode => (
                     <button key={mode} onClick={() => setDeliveryMode(mode)}
-                      className={`p-4 rounded-2xl border-2 font-black text-[10px] uppercase tracking-wide flex flex-col items-center gap-2 transition-all active:scale-95 ${deliveryMode === mode ? 'border-brand-orange bg-brand-orange/5 text-brand-orange' : 'border-brand-sand text-brand-stone/50 hover:border-brand-orange/50'}`}>
+                      className={`p-3.5 rounded-2xl border-2 font-black text-[10px] uppercase tracking-wide flex flex-col items-center gap-1.5 transition-all active:scale-95 ${deliveryMode === mode ? 'border-brand-orange bg-brand-orange/5 text-brand-orange' : 'border-brand-sand text-brand-stone/50 hover:border-brand-orange/50'}`}>
                       <span className="text-2xl">{mode === 'livraison' ? '🚚' : '🏢'}</span>
                       <span>{mode === 'livraison' ? 'Livraison domicile' : 'Retrait au siège'}</span>
                     </button>
@@ -394,107 +389,97 @@ const CheckoutModal: React.FC<{
                 </div>
               </div>
 
-              {deliveryMode === 'livraison' && (
+              {deliveryMode === 'livraison' ? (
                 <>
-                  <div className="flex items-start gap-3 bg-blue-50 p-3.5 rounded-2xl border border-blue-100">
-                    <MapPin size={16} className="text-blue-500 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-3 bg-blue-50 p-3 rounded-xl border border-blue-100">
+                    <MapPin size={14} className="text-blue-500 shrink-0 mt-0.5" />
+                    <p className="text-[10px] font-medium text-blue-700/80 leading-snug">
+                      Livraison dans les <strong>10 régions du Cameroun</strong>. Délais et frais variables selon localisation.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-blue-600 mb-0.5">Livraison nationale</p>
-                      <p className="text-[10px] font-medium text-blue-700/80 leading-snug">
-                        Nous livrons dans les <strong>10 régions du Cameroun</strong>. Délais et frais variables selon localisation.
-                      </p>
+                      <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">Région</label>
+                      <div className="relative">
+                        <select value={region} onChange={e => setRegion(e.target.value)}
+                          className="w-full appearance-none px-4 py-3 rounded-2xl border-2 border-brand-sand focus:border-brand-orange outline-none font-black text-brand-stone text-sm bg-white transition-all cursor-pointer">
+                          <option value="">Sélectionner...</option>
+                          {REGIONS_CAMEROUN.map(r => <option key={r} value={r}>{r}</option>)}
+                        </select>
+                        {region && <Check size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 pointer-events-none" />}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">Ville</label>
+                      <input type="text" placeholder="Douala, Yaoundé..."
+                        value={ville} onChange={e => setVille(e.target.value)}
+                        className="w-full px-4 py-3 rounded-2xl border-2 border-brand-sand focus:border-brand-orange outline-none font-black text-brand-stone text-sm bg-white transition-all" />
                     </div>
                   </div>
-
-                  <div>
-                    <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">Région</label>
-                    <div className="relative">
-                      <select value={region} onChange={e => setRegion(e.target.value)}
-                        className="w-full appearance-none px-4 py-3.5 rounded-2xl border-2 border-brand-sand focus:border-brand-orange outline-none font-black text-brand-stone text-sm bg-white transition-all cursor-pointer">
-                        <option value="">Sélectionner votre région...</option>
-                        {REGIONS_CAMEROUN.map(r => <option key={r} value={r}>{r}</option>)}
-                      </select>
-                      <ChevronRight size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-stone/30 rotate-90 pointer-events-none" />
-                      {region && <Check size={14} className="absolute right-10 top-1/2 -translate-y-1/2 text-green-500 pointer-events-none" />}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">Ville / Localité</label>
-                    <input type="text" placeholder="Ex: Douala, Bafoussam, Garoua, Ngaoundéré..."
-                      value={ville} onChange={e => setVille(e.target.value)}
-                      className="w-full px-4 py-3.5 rounded-2xl border-2 border-brand-sand focus:border-brand-orange outline-none font-black text-brand-stone text-sm bg-white transition-all" />
-                  </div>
-
                   <div>
                     <label className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5 block">Adresse complète & repère</label>
-                    <textarea placeholder="Quartier, rue, repère proche (ex: près du marché central)..."
-                      value={adresse} onChange={e => setAdresse(e.target.value)} rows={3}
-                      className="w-full px-4 py-3.5 rounded-2xl border-2 border-brand-sand focus:border-brand-orange outline-none font-medium text-brand-stone text-sm bg-white transition-all resize-none" />
+                    <textarea placeholder="Quartier, rue, repère proche..."
+                      value={adresse} onChange={e => setAdresse(e.target.value)} rows={2}
+                      className="w-full px-4 py-3 rounded-2xl border-2 border-brand-sand focus:border-brand-orange outline-none font-medium text-brand-stone text-sm bg-white transition-all resize-none" />
                   </div>
-
                   <div className="grid grid-cols-2 gap-2">
-                    {[['📍','Yaoundé / Douala','24 – 48h'],['🗺️','Autres grandes villes','48 – 72h'],['🌍','Zones rurales','3 – 5 jours'],['📞','Confirmation','Par WhatsApp']].map(([icon,label,val]) => (
-                      <div key={label} className="bg-brand-beige/60 rounded-xl p-2.5 border border-brand-sand">
-                        <span className="text-base block mb-0.5">{icon}</span>
+                    {[['📍','Yaoundé / Douala','24 – 48h'],['🗺️','Autres villes','48 – 72h'],['🌿','Zones rurales','3 – 5 jours'],['📞','Confirmation','Par WhatsApp']].map(([icon,label,val]) => (
+                      <div key={label} className="bg-brand-beige/60 rounded-xl p-2 border border-brand-sand">
+                        <span className="text-sm block mb-0.5">{icon}</span>
                         <p className="text-[8px] font-bold text-brand-stone/50 uppercase leading-tight mb-0.5">{label}</p>
                         <p className="text-[9px] font-black text-brand-stone">{val}</p>
                       </div>
                     ))}
                   </div>
                 </>
-              )}
-
-              {deliveryMode === 'retrait' && (
-                <div className="bg-brand-beige/60 p-4 rounded-2xl border border-brand-sand space-y-3">
+              ) : (
+                <div className="bg-brand-beige/60 p-4 rounded-2xl border border-brand-sand space-y-2">
                   <div className="flex items-start gap-3">
-                    <MapPin size={18} className="text-brand-orange shrink-0 mt-0.5" />
+                    <MapPin size={16} className="text-brand-orange shrink-0 mt-0.5" />
                     <div>
                       <p className="text-[9px] font-black uppercase tracking-widest text-brand-orange mb-1">Siège Imani-Tech</p>
                       <p className="text-sm font-black text-brand-stone">Yaoundé, Cameroun</p>
-                      <p className="text-[10px] font-medium text-brand-stone/60 mt-0.5">Lun–Ven : 8h00 – 17h00</p>
-                      <p className="text-[10px] font-medium text-brand-stone/60">Samedi : 9h00 – 13h00</p>
+                      <p className="text-[10px] font-medium text-brand-stone/60 mt-0.5">Lun–Ven : 8h00 – 17h00 · Sam : 9h00 – 13h00</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 bg-brand-orange/5 rounded-xl px-3 py-2 border border-brand-orange/15">
                     <AlertCircle size={12} className="text-brand-orange shrink-0" />
-                    <p className="text-[9px] font-medium text-brand-stone/60">Vous serez contacté par WhatsApp avant votre déplacement pour confirmer la disponibilité.</p>
+                    <p className="text-[9px] font-medium text-brand-stone/60">Vous serez contacté par WhatsApp avant votre déplacement.</p>
                   </div>
                 </div>
               )}
             </>
           )}
 
-          {/* ── ÉTAPE 3 ── */}
+          {/* ÉTAPE 3 — Confirmation */}
           {!done && step === 3 && (
             <>
               <div className="bg-brand-beige/50 rounded-2xl border border-brand-sand overflow-hidden">
                 <div className="px-4 py-2.5 border-b border-brand-sand/50">
                   <span className="text-[8px] font-black uppercase tracking-widest text-brand-orange">Articles commandés</span>
                 </div>
-                <div className="divide-y divide-brand-sand/50">
+                <div className="divide-y divide-brand-sand/50 max-h-32 overflow-y-auto">
                   {cart.map(i => (
-                    <div key={i.product.id} className="flex justify-between items-center px-4 py-2.5 gap-3">
+                    <div key={i.product.id} className="flex justify-between items-center px-4 py-2 gap-3">
                       <span className="text-[10px] font-bold text-brand-stone/70 truncate">{i.product.name} ×{i.qty}</span>
                       <span className="text-[10px] font-black text-brand-stone shrink-0">{fmt(i.product.price * i.qty)}</span>
                     </div>
                   ))}
                 </div>
-                <div className="px-4 py-3 bg-brand-stone/5 border-t border-brand-sand flex justify-between">
+                <div className="px-4 py-2.5 bg-brand-stone/5 border-t border-brand-sand flex justify-between">
                   <span className="text-[9px] font-black uppercase tracking-widest text-brand-stone/40">Total payé</span>
                   <span className="text-xl font-black text-brand-stone">{fmt(total)}</span>
                 </div>
               </div>
-
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-brand-beige/50 p-3.5 rounded-2xl border border-brand-sand">
-                  <p className="text-[7px] font-black uppercase tracking-widest text-brand-orange mb-1.5">Paiement</p>
+                <div className="bg-brand-beige/50 p-3 rounded-2xl border border-brand-sand">
+                  <p className="text-[7px] font-black uppercase tracking-widest text-brand-orange mb-1">Paiement</p>
                   <p className="text-[11px] font-black text-brand-stone">{payMethod === 'mtn' ? 'MTN MoMo' : 'Orange Money'}</p>
                   <p className="text-[9px] font-bold text-brand-stone/50 mt-0.5">+237 {payPhone}</p>
                   <p className="text-[9px] font-bold text-brand-stone/40 mt-0.5 truncate">Code: {txCode}</p>
                 </div>
-                <div className="bg-brand-beige/50 p-3.5 rounded-2xl border border-brand-sand">
-                  <p className="text-[7px] font-black uppercase tracking-widest text-brand-orange mb-1.5">Livraison</p>
+                <div className="bg-brand-beige/50 p-3 rounded-2xl border border-brand-sand">
+                  <p className="text-[7px] font-black uppercase tracking-widest text-brand-orange mb-1">Livraison</p>
                   {deliveryMode === 'livraison' ? (
                     <>
                       <p className="text-[11px] font-black text-brand-stone">Région {region}</p>
@@ -509,9 +494,8 @@ const CheckoutModal: React.FC<{
                   )}
                 </div>
               </div>
-
-              <div className="bg-green-50 p-4 rounded-2xl border border-green-200 flex items-start gap-3">
-                <span className="text-xl shrink-0">📱</span>
+              <div className="bg-green-50 p-3.5 rounded-2xl border border-green-200 flex items-start gap-3">
+                <span className="text-lg shrink-0">📱</span>
                 <p className="text-[11px] font-medium text-green-700 leading-relaxed">
                   En cliquant sur <strong>Envoyer sur WhatsApp</strong>, vous serez redirigé avec toutes vos informations préremplies.
                 </p>
@@ -520,30 +504,31 @@ const CheckoutModal: React.FC<{
           )}
         </div>
 
-        {/* Footer navigation — sticky, toujours visible */}
+        {/* ── FOOTER NAVIGATION — toujours visible en bas ── */}
         {!done && (
-          <div className="shrink-0 bg-white border-t border-brand-sand p-4 sm:p-5">
+          <div className="shrink-0 bg-white border-t-2 border-brand-sand p-4 sm:p-5">
             <div className="flex gap-2.5">
               {step > 1 && (
                 <button onClick={() => setStep(prev => (prev - 1) as 1|2|3)}
-                  className="flex-1 border-2 border-brand-sand text-brand-stone py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-brand-orange transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                  className="flex-1 border-2 border-brand-sand text-brand-stone py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-brand-orange transition-all flex items-center justify-center gap-1.5 active:scale-95">
                   <ChevronLeft size={13} /> Retour
                 </button>
               )}
               {step < 3 ? (
                 <button onClick={() => setStep(prev => (prev + 1) as 1|2|3)}
                   disabled={step === 1 ? !canStep1 : !canStep2}
-                  className="flex-[2] bg-brand-orange text-white py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-brand-stone transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-95">
+                  className="flex-[2] bg-brand-orange text-white py-4 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-brand-stone transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-95">
                   Étape suivante <ChevronRight size={14} />
                 </button>
               ) : (
                 <button
                   onClick={() => { window.open(`https://wa.me/${WHATSAPP_ORDER_NUMBER}?text=${buildMsg()}`, '_blank'); setDone(true); }}
-                  className="flex-[2] bg-[#25D366] text-white py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95">
+                  className="flex-[2] bg-[#25D366] text-white py-4 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95">
                   📱 Envoyer sur WhatsApp
                 </button>
               )}
             </div>
+            {/* Barre progression */}
             <div className="flex gap-1.5 mt-3">
               {[1,2,3].map(n => (
                 <div key={n} className={`flex-1 h-1 rounded-full transition-all duration-300 ${step >= n ? 'bg-brand-orange' : 'bg-brand-sand'}`} />
@@ -556,7 +541,121 @@ const CheckoutModal: React.FC<{
   );
 };
 
-// ─── PAGE PRINCIPALE ──────────────────────────────────────────────────────────
+// ─── MODAL PRODUIT OPTIMISÉE ──────────────────────────────────────────────────
+const ProductModal: React.FC<{
+  product: ShopProduct;
+  category: string;
+  onClose: () => void;
+  onAdd: (p: ShopProduct, cat: string) => void;
+}> = ({ product: p, category, onClose, onAdd }) => (
+  <div className="fixed inset-0 z-[999] flex items-end sm:items-center justify-center sm:p-4 bg-brand-stone/90 backdrop-blur-md">
+    <div className="absolute inset-0" onClick={onClose} />
+    <div className="relative bg-white w-full sm:max-w-2xl rounded-t-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-brand-sand"
+      style={{ maxHeight: '94vh', animation: 'slideInFromBottom 0.3s cubic-bezier(0.32,0.72,0,1) both' }}>
+
+      {/* ── HEADER sticky avec infos clés ── */}
+      <div className="bg-brand-stone p-4 sm:p-5 text-white flex justify-between items-start shrink-0 border-b-4 border-brand-orange">
+        <div className="pr-3 min-w-0">
+          <span className="text-[8px] font-black uppercase tracking-widest text-brand-orange block mb-0.5">{category} · {p.brand}</span>
+          <h2 className="text-base sm:text-xl font-black uppercase tracking-tighter leading-tight line-clamp-2">{p.name}</h2>
+          <p className="text-white/40 text-[9px] font-bold uppercase mt-0.5">Réf: {p.ref}</p>
+        </div>
+        <button onClick={onClose} className="w-9 h-9 bg-white/10 hover:bg-brand-orange rounded-full flex items-center justify-center transition-all shrink-0">
+          <X size={15} />
+        </button>
+      </div>
+
+      {/* ── BLOC PRIX + CTA — toujours visible tout en haut ── */}
+      <div className="shrink-0 px-4 sm:px-6 py-3 bg-white border-b border-brand-sand flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div>
+            <div className="text-xl sm:text-2xl font-black text-brand-stone tracking-tighter">{fmt(p.price)}</div>
+            {p.oldPrice && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-brand-stone/30 line-through font-bold">{fmt(p.oldPrice)}</span>
+                <span className="text-red-500 font-black text-[9px] bg-red-50 px-1.5 py-0.5 rounded-full">-{Math.round((1-p.price/p.oldPrice)*100)}%</span>
+              </div>
+            )}
+          </div>
+          <span className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase ${p.stock <= 5 ? 'bg-red-50 text-red-500 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
+            {p.stock <= 5 ? `⚠ ${p.stock} en stock` : '✓ En stock'}
+          </span>
+        </div>
+        <button
+          onClick={() => { onAdd(p, category); onClose(); }}
+          className="shrink-0 bg-brand-orange text-white px-4 sm:px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-brand-stone transition-all shadow-lg shadow-brand-orange/25 flex items-center gap-2 active:scale-95 whitespace-nowrap"
+        >
+          <ShoppingCart size={14} />
+          <span className="hidden sm:inline">Ajouter au panier</span>
+          <span className="sm:hidden">Ajouter</span>
+        </button>
+      </div>
+
+      {/* ── CONTENU : image petite à gauche + description à droite, tout visible ── */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="p-4 sm:p-5">
+
+          {/* Layout : image petite + description côte à côte dès mobile */}
+          <div className="flex gap-4 mb-4">
+            {/* Image compacte */}
+            <div className="shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden bg-brand-beige/30 border border-brand-sand">
+              <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+            </div>
+            {/* Infos rapides */}
+            <div className="flex-1 min-w-0 space-y-2">
+              <div className="flex items-center gap-1.5">
+                <Stars rating={p.rating} size={11} />
+                <span className="text-[9px] font-black text-brand-stone/40">{p.rating}/5 ({p.reviews})</span>
+              </div>
+              <div className="space-y-1.5">
+                {[
+                  [Truck, 'Livraison 10 régions'],
+                  [RotateCcw, 'Retour 7 jours'],
+                  [ShieldCheck, 'Garantie certifiée'],
+                ].map(([Icon, text]) => (
+                  <div key={text as string} className="flex items-center gap-2">
+                    {React.createElement(Icon as React.ElementType, { size: 11, className: 'text-brand-orange shrink-0' })}
+                    <span className="text-[9px] font-bold text-brand-stone/50 uppercase tracking-tight">{text as string}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Description — visible directement sans scroll */}
+          <div className="mb-4">
+            <h4 className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5">Description & Spécifications</h4>
+            <p className="text-brand-stone/70 font-medium text-xs sm:text-sm leading-relaxed">{p.description}</p>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <h4 className="text-[8px] font-black uppercase tracking-widest text-brand-stone/40 mb-1.5">Mots-clés</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {p.tags.map(tag => (
+                <span key={tag} className="px-2 py-0.5 bg-brand-beige rounded-full text-[8px] font-black uppercase tracking-widest text-brand-orange border border-brand-sand">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── FOOTER CTA — visible sur tous les écrans ── */}
+      <div className="shrink-0 p-4 bg-white border-t-2 border-brand-orange">
+        <button
+          onClick={() => { onAdd(p, category); onClose(); }}
+          className="w-full bg-brand-orange text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-brand-stone transition-all shadow-xl flex items-center justify-center gap-2 active:scale-95"
+        >
+          <ShoppingCart size={15} /> Ajouter au panier — {fmt(p.price)}
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── PAGE PRINCIPALE ───────────────────────────────────────────────────────────
 const ShopPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -663,9 +762,6 @@ const ShopPage: React.FC = () => {
                   value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                   onFocus={() => setSearchFocused(true)} onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
                   className="flex-grow py-3.5 sm:py-4 pr-2 outline-none font-bold text-brand-stone bg-transparent text-sm placeholder-brand-stone/30 min-w-0" />
-                {searchQuery && allProducts.length > 0 && (
-                  <span className="hidden sm:block shrink-0 text-[9px] font-black text-brand-stone/30 px-2">{allProducts.length} rés.</span>
-                )}
                 {searchQuery && (
                   <button onClick={() => { setSearchQuery(''); searchRef.current?.focus(); }}
                     className="shrink-0 w-7 h-7 mr-1 bg-brand-sand/50 hover:bg-red-100 hover:text-red-500 text-brand-stone/40 rounded-full flex items-center justify-center transition-all">
@@ -677,12 +773,8 @@ const ShopPage: React.FC = () => {
                   <Search size={13} className="sm:hidden" />
                 </button>
               </div>
-
               {searchFocused && suggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-brand-sand rounded-xl shadow-2xl z-40 overflow-hidden">
-                  <div className="px-4 py-2 border-b border-brand-sand/50">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-brand-stone/30">Suggestions</span>
-                  </div>
                   {suggestions.map((s, i) => (
                     <button key={i} onClick={() => { setSearchQuery(s); setSearchFocused(false); }}
                       className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-brand-beige/50 transition-colors text-left border-b border-brand-sand/30 last:border-0">
@@ -692,7 +784,6 @@ const ShopPage: React.FC = () => {
                   ))}
                 </div>
               )}
-
               {!searchQuery && (
                 <div className="flex flex-wrap justify-center gap-1.5 mt-3">
                   {['Laptop HP','Epson EcoTank','Switch réseau','Onduleur APC','WiFi 6','NAS Synology'].map(tag => (
@@ -707,14 +798,13 @@ const ShopPage: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mt-8 px-4">
-            {[['🚚','Livraison nationale'],['🔒','Paiement sécurisé'],['🔁','Retour 7 jours'],['⭐','Produits certifiés']].map(([icon, label]) => (
+            {[['🚚','Livraison nationale'],['🔒','Paiement sécurisé'],['🔄','Retour 7 jours'],['⭐','Produits certifiés']].map(([icon, label]) => (
               <div key={label} className="flex items-center gap-1.5 text-brand-stone/50 font-black text-[8px] sm:text-[9px] uppercase tracking-widest">
                 <span>{icon}</span><span>{label}</span>
               </div>
             ))}
           </div>
         </div>
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-brand-orange/5 blur-[100px] rounded-full pointer-events-none" />
       </section>
 
       {/* BANDEAU PARTENAIRES */}
@@ -841,82 +931,14 @@ const ShopPage: React.FC = () => {
         </div>
       </section>
 
-      {/* MODAL PRODUIT */}
+      {/* MODAL PRODUIT OPTIMISÉE */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 bg-brand-stone/90 backdrop-blur-md">
-          <div className="bg-white w-full sm:max-w-4xl rounded-t-[2rem] sm:rounded-[3rem] shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-brand-sand"
-            style={{ animation: 'slideInFromBottom 0.3s cubic-bezier(0.32,0.72,0,1) both' }}>
-            <div className="bg-brand-stone p-4 sm:p-8 text-white flex justify-between items-start shrink-0 border-b-4 border-brand-orange">
-              <div className="pr-3">
-                <span className="text-[8px] font-black uppercase tracking-widest text-brand-orange block mb-0.5">{selectedProduct.category} · {selectedProduct.product.brand}</span>
-                <h2 className="text-base sm:text-2xl font-black uppercase tracking-tighter leading-tight">{selectedProduct.product.name}</h2>
-                <p className="text-white/40 text-[9px] font-bold uppercase mt-0.5">Réf: {selectedProduct.product.ref}</p>
-              </div>
-              <button onClick={() => setSelectedProduct(null)} className="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 hover:bg-brand-orange rounded-full flex items-center justify-center transition-all shrink-0">
-                <X size={15} />
-              </button>
-            </div>
-            <div className="flex-grow overflow-y-auto p-4 sm:p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-                <div className="space-y-4">
-                  <div className="w-full h-48 sm:h-64 rounded-2xl overflow-hidden bg-brand-beige/30">
-                    <img src={selectedProduct.product.image} alt={selectedProduct.product.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="p-4 bg-brand-beige/50 rounded-2xl border border-brand-sand">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-brand-orange block mb-1">Prix</span>
-                    <div className="text-2xl sm:text-3xl font-black text-brand-stone tracking-tighter">{fmt(selectedProduct.product.price)}</div>
-                    {selectedProduct.product.oldPrice && (
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-brand-stone/30 line-through font-bold">{fmt(selectedProduct.product.oldPrice)}</span>
-                        <span className="text-red-500 font-black text-[9px]">-{Math.round((1-selectedProduct.product.price/selectedProduct.product.oldPrice)*100)}%</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Stars rating={selectedProduct.product.rating} size={14} />
-                    <span className="text-[9px] font-black text-brand-stone/40">{selectedProduct.product.rating}/5 ({selectedProduct.product.reviews} avis)</span>
-                  </div>
-                  <span className={`inline-flex px-3 py-1.5 rounded-full text-[9px] font-black uppercase ${selectedProduct.product.stock <= 5 ? 'bg-red-50 text-red-500 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
-                    {selectedProduct.product.stock <= 5 ? `⚠ ${selectedProduct.product.stock} en stock` : '✓ En stock'}
-                  </span>
-                  <button onClick={() => { addToCart(selectedProduct.product, selectedProduct.category); setSelectedProduct(null); }}
-                    className="w-full bg-brand-orange text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-brand-stone transition-all shadow-xl flex items-center justify-center gap-2 active:scale-95">
-                    <ShoppingCart size={15} /> Ajouter au panier
-                  </button>
-                </div>
-                <div className="space-y-5">
-                  <div>
-                    <h4 className="text-[9px] font-black uppercase tracking-widest text-brand-stone/40 mb-2">Description & Spécifications</h4>
-                    <p className="text-brand-stone/70 font-medium text-xs sm:text-sm leading-relaxed">{selectedProduct.product.description}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-[9px] font-black uppercase tracking-widest text-brand-stone/40 mb-2">Mots-clés</h4>
-                    <div className="flex flex-wrap gap-1.5">
-                      {selectedProduct.product.tags.map(tag => (
-                        <span key={tag} onClick={() => { setSearchQuery(tag); setSelectedProduct(null); }}
-                          className="px-2.5 py-1 bg-brand-beige rounded-full text-[8px] font-black uppercase tracking-widest text-brand-orange border border-brand-sand hover:bg-brand-orange hover:text-white cursor-pointer transition-all">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="bg-brand-beige/50 p-4 rounded-2xl border border-brand-sand space-y-2.5">
-                    {[
-                      [Truck, 'Livraison dans les 10 régions du Cameroun'],
-                      [RotateCcw, 'Retour gratuit sous 7 jours'],
-                      [ShieldCheck, 'Garantie Imani-Tech certifiée'],
-                    ].map(([Icon, text]) => (
-                      <div key={text as string} className="flex items-center gap-3">
-                        {React.createElement(Icon as React.ElementType, { size: 15, className: 'text-brand-orange shrink-0' })}
-                        <span className="text-[10px] font-black uppercase text-brand-stone/70">{text as string}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProductModal
+          product={selectedProduct.product}
+          category={selectedProduct.category}
+          onClose={() => setSelectedProduct(null)}
+          onAdd={addToCart}
+        />
       )}
 
       {/* PANIER LATÉRAL */}
@@ -967,3 +989,6 @@ const ShopPage: React.FC = () => {
 };
 
 export default ShopPage;
+
+
+
