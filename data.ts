@@ -3,7 +3,7 @@ import { Package, CaseStudy } from './types';
 
 export const SITE_NAME = "IMANI-TECH SOLUTIONS";
 export const OFFICIAL_EMAIL = "imanitechsolutions237@gmail.com";
-export const WHATSAPP_NUMBER = "+237672777657";
+export const WHATSAPP_NUMBER = "+33759836478";
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER.replace('+', '')}`;
 
 export const CAMEROON_CITIES = [
