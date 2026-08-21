@@ -1,3 +1,4 @@
+﻿import { AdminFooterButton } from './components/admin/AdminFooterButton';
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, MessageSquare, Send, Bot, Loader2, Linkedin, Facebook, Instagram, ShieldCheck, CheckCircle2, ArrowUpRight } from 'lucide-react';
@@ -5,7 +6,7 @@ import { AppRoute } from '../types';
 import { chatWithAssistant } from '../services/geminiService';
 import { SITE_NAME, CAMEROON_CITIES, WHATSAPP_LINK, WHATSAPP_NUMBER } from '../data';
 
-// ─── CSS Animations injected globally ───────────────────────────────────────
+// â”€â”€â”€ CSS Animations injected globally â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const injectStyles = () => {
   if (document.getElementById('layout-animations')) return;
   const style = document.createElement('style');
@@ -140,7 +141,7 @@ const injectStyles = () => {
   document.head.appendChild(style);
 };
 
-// ─── Animated Word Cycler ────────────────────────────────────────────────────
+// â”€â”€â”€ Animated Word Cycler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const WordCycler: React.FC<{ words: string[]; className?: string }> = ({ words, className = '' }) => {
   const [idx, setIdx] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -170,16 +171,16 @@ const WordCycler: React.FC<{ words: string[]; className?: string }> = ({ words, 
   );
 };
 
-// ─── Ticker Banner ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Ticker Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TickerBanner: React.FC = () => {
   const items = [
-    '✦ Infrastructure Réseau LAN/Wi-Fi',
-    '✦ Vidéosurveillance IP',
-    '✦ Solutions Web & Mobile',
-    '✦ Audit de Sécurité',
-    '✦ Maintenance Informatique',
-    '✦ Couverture Nationale Cameroun',
-    '✦ Expertise IA & Digitalisation',
+    'âœ¦ Infrastructure RÃ©seau LAN/Wi-Fi',
+    'âœ¦ VidÃ©osurveillance IP',
+    'âœ¦ Solutions Web & Mobile',
+    'âœ¦ Audit de SÃ©curitÃ©',
+    'âœ¦ Maintenance Informatique',
+    'âœ¦ Couverture Nationale Cameroun',
+    'âœ¦ Expertise IA & Digitalisation',
   ];
   const repeated = [...items, ...items];
 
@@ -196,7 +197,7 @@ const TickerBanner: React.FC = () => {
   );
 };
 
-// ─── FormattedResponse ───────────────────────────────────────────────────────
+// â”€â”€â”€ FormattedResponse â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FormattedResponse: React.FC<{ text: string }> = ({ text }) => {
   const lines = text.split('\n');
   return (
@@ -209,11 +210,11 @@ const FormattedResponse: React.FC<{ text: string }> = ({ text }) => {
             </h4>
           );
         }
-        if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
+        if (line.trim().startsWith('-') || line.trim().startsWith('â€¢')) {
           return (
             <div key={i} className="flex items-start space-x-2 ml-2">
               <div className="w-1.5 h-1.5 bg-brand-orange rounded-full mt-1.5 shrink-0"></div>
-              <span className="text-[13px] font-bold text-brand-stone/80">{line.replace(/^[-•]\s*/, '')}</span>
+              <span className="text-[13px] font-bold text-brand-stone/80">{line.replace(/^[-â€¢]\s*/, '')}</span>
             </div>
           );
         }
@@ -226,7 +227,7 @@ const FormattedResponse: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-// ─── Navbar ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Navbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -242,12 +243,12 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: 'À PROPOS',        path: AppRoute.About },
+    { name: 'Ã€ PROPOS',        path: AppRoute.About },
     { name: 'SERVICES',        path: AppRoute.Services },
     { name: 'AUTRES SERVICES', path: AppRoute.DigitalSolutions, isBadge: true },
-    { name: 'NOS RÉALISATIONS',path: AppRoute.CaseStudies },
+    { name: 'NOS RÃ‰ALISATIONS',path: AppRoute.CaseStudies },
     { name: 'NOS PACKAGES',    path: AppRoute.Packages },
-    { name: 'RÉSERVEZ UN AUDIT', path: AppRoute.Audit, isCTA: true },
+    { name: 'RÃ‰SERVEZ UN AUDIT', path: AppRoute.Audit, isCTA: true },
     { name: 'CONTACT',         path: AppRoute.Contact },
   ];
 
@@ -300,7 +301,7 @@ const Navbar: React.FC = () => {
                 {/* Cycling tagline */}
                 <span className="text-[9px] font-extrabold uppercase tracking-[0.4em] mt-1 text-brand-stone/40 overflow-hidden h-4 flex items-center">
                   <WordCycler
-                    words={['Expertise Digitale Premium', 'Réseau & Infrastructure', 'Sécurité Avancée', 'Solutions IA Cameroun']}
+                    words={['Expertise Digitale Premium', 'RÃ©seau & Infrastructure', 'SÃ©curitÃ© AvancÃ©e', 'Solutions IA Cameroun']}
                   />
                 </span>
               </div>
@@ -397,7 +398,7 @@ const Navbar: React.FC = () => {
   );
 };
 
-// ─── Footer ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AnimatedCounter: React.FC<{ value: string; label: string }> = ({ value, label }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -457,7 +458,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-brand-beige/40 rounded-3xl p-8 border border-brand-sand/30">
           <AnimatedCounter value="200+"  label="Clients Satisfaits" />
-          <AnimatedCounter value="8 Ans" label="D'Expérience" />
+          <AnimatedCounter value="8 Ans" label="D'ExpÃ©rience" />
           <AnimatedCounter value="12"    label="Villes Couvertes" />
           <AnimatedCounter value="99%"   label="Uptime Garanti" />
         </div>
@@ -478,7 +479,7 @@ const Footer: React.FC = () => {
             <span className="text-brand-orange">SOLUTIONS</span>
           </Link>
           <p className="text-brand-stone/60 text-sm leading-relaxed max-w-xs font-bold">
-            Partenaire stratégique des PME leaders au Cameroun. Acquisition digitale, Infrastructures IT et Sécurité avancée.
+            Partenaire stratÃ©gique des PME leaders au Cameroun. Acquisition digitale, Infrastructures IT et SÃ©curitÃ© avancÃ©e.
           </p>
           <div className="flex space-x-5">
             {[Linkedin, Facebook, Instagram].map((Icon, i) => (
@@ -506,8 +507,8 @@ const Footer: React.FC = () => {
           <ul className="space-y-5">
             {[
               { n: 'Packages Croissance', p: AppRoute.Packages },
-              { n: 'Réseaux LAN / Wi-Fi', p: AppRoute.Services },
-              { n: 'Vidéosurveillance IP', p: AppRoute.Services },
+              { n: 'RÃ©seaux LAN / Wi-Fi', p: AppRoute.Services },
+              { n: 'VidÃ©osurveillance IP', p: AppRoute.Services },
               { n: 'Solutions Web & App',  p: AppRoute.Services },
             ].map((item, i) => (
               <li key={item.n}>
@@ -574,7 +575,7 @@ const Footer: React.FC = () => {
               to={AppRoute.Audit}
               className="cta-btn block w-full bg-brand-stone text-white text-center py-4 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all hover:bg-brand-orange shadow-xl shadow-brand-stone/10 flex items-center justify-center gap-2"
             >
-              Réservez un Audit
+              RÃ©servez un Audit
               <ArrowUpRight size={13} />
             </Link>
           </div>
@@ -587,7 +588,7 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} {SITE_NAME} | Douala, Cameroun
         </p>
         <div className="flex space-x-8 mt-6 md:mt-0">
-          {['Confidentialité', 'Expertise IA'].map(t => (
+          {['ConfidentialitÃ©', 'Expertise IA'].map(t => (
             <a key={t} href="#" className="hover:text-brand-orange transition-colors relative group">
               {t}
               <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-brand-orange group-hover:w-full transition-all duration-300"></span>
@@ -599,7 +600,7 @@ const Footer: React.FC = () => {
   );
 };
 
-// ─── AI Assistant ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ AI Assistant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AIAssistant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'bot' | 'user'; text: string }[]>([
@@ -651,7 +652,7 @@ const AIAssistant: React.FC = () => {
               <div>
                 <p className="font-black text-[11px] uppercase tracking-[0.1em]">Expert Technique IA</p>
                 <p className="text-[9px] font-bold uppercase tracking-[0.2em] opacity-50 flex items-center gap-1">
-                  Cameroun • Actif
+                  Cameroun â€¢ Actif
                   <span className="flex gap-0.5">
                     <span className="w-1 h-1 bg-green-400 rounded-full dot-1 inline-block"></span>
                     <span className="w-1 h-1 bg-green-400 rounded-full dot-2 inline-block"></span>
@@ -695,7 +696,7 @@ const AIAssistant: React.FC = () => {
                 {m.role === 'bot' && (
                   <div className="mt-4 ml-1 flex items-center space-x-2 opacity-30">
                     <CheckCircle2 size={10} className="text-brand-orange" />
-                    <span className="text-[8px] font-black uppercase tracking-widest">Validé par Imani-Tech Solutions</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest">ValidÃ© par Imani-Tech Solutions</span>
                   </div>
                 )}
               </div>
@@ -772,7 +773,7 @@ const AIAssistant: React.FC = () => {
   );
 };
 
-// ─── Layout ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const Layout: React.FC = () => {
   useEffect(() => { injectStyles(); }, []);
 
