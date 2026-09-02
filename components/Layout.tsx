@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AdminLoginModal } from '../src/components/admin/AdminLoginModal';
+import type { AdminRole } from '../src/types/admin';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, MessageSquare, Send, Bot, Loader2, Linkedin, Facebook, Instagram, ShieldCheck, CheckCircle2, ArrowUpRight, Home, Info, Wrench, Sparkles, Trophy, Package, CalendarCheck, Mail, ShoppingCart } from 'lucide-react';
 import { AppRoute } from '../types';
@@ -552,6 +554,27 @@ const Footer: React.FC = () => {
   const footerRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
 
+  // ── Secret admin trigger ──────────────────────────────────────────
+  const [clickCount, setClickCount]     = useState(0);
+  const [showRolePicker, setShowRolePicker] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<AdminRole | null>(null);
+  const clickTimerRef                   = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSecretClick = () => {
+    setClickCount(prev => {
+      const next = prev + 1;
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+      clickTimerRef.current = setTimeout(() => setClickCount(0), 2000);
+      if (next >= 5) {
+        clearTimeout(clickTimerRef.current!);
+        setClickCount(0);
+        setShowRolePicker(true); // affiche le menu de choix Admin 1 / Admin 2
+      }
+      return next;
+    });
+  };
+  // ─────────────────────────────────────────────────────────────────
+
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.1 });
     if (footerRef.current) obs.observe(footerRef.current);
@@ -642,9 +665,45 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 border-t border-brand-sand pt-8 sm:pt-10 flex flex-col md:flex-row justify-between items-center text-brand-stone/30 text-[9px] font-black uppercase tracking-[0.4em] gap-4 md:gap-0">
-        <p className="hover:text-brand-stone/60 transition-colors cursor-default text-center md:text-left">
-          &copy; {new Date().getFullYear()} {SITE_NAME} | Douala, Cameroun
-        </p>
+        {/* Secret trigger : 5 clics rapides sur le copyright */}
+        <div className="relative">
+          <p
+            onClick={handleSecretClick}
+            className="hover:text-brand-stone/60 transition-colors cursor-default text-center md:text-left select-none"
+          >
+            &copy; {new Date().getFullYear()} {SITE_NAME} | Douala, Cameroun
+          </p>
+
+          {/* Menu de choix de rôle – apparaît après 5 clics secrets */}
+          {showRolePicker && (
+            <div className="absolute bottom-full mb-3 left-0 w-52 bg-white border border-slate-200 rounded-xl shadow-2xl py-1 z-50 overflow-hidden">
+              <p className="px-4 py-2 text-[9px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">
+                Espace Administration
+              </p>
+              <button
+                onClick={() => { setShowRolePicker(false); setSelectedRole('SUPER_ADMIN'); }}
+                className="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-blue-50 transition font-semibold flex items-center justify-between"
+              >
+                <span>Admin 1</span>
+                <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded font-bold">Global</span>
+              </button>
+              <button
+                onClick={() => { setShowRolePicker(false); setSelectedRole('SHOP_ADMIN'); }}
+                className="w-full text-left px-4 py-2.5 text-xs text-slate-700 hover:bg-blue-50 transition font-semibold flex items-center justify-between border-t border-slate-100"
+              >
+                <span>Admin 2</span>
+                <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-bold">Boutique</span>
+              </button>
+              <button
+                onClick={() => setShowRolePicker(false)}
+                className="w-full text-center px-4 py-2 text-[10px] text-slate-400 hover:text-slate-600 border-t border-slate-100 transition"
+              >
+                Annuler
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="flex space-x-6 sm:space-x-8">
           {['Confidentialité', 'Expertise IA'].map(t => (
             <a key={t} href="#" className="hover:text-brand-orange transition-colors relative group">
@@ -654,7 +713,19 @@ const Footer: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Modal de connexion – s'ouvre après sélection du rôle */}
+      <AdminLoginModal
+        isOpen={!!selectedRole}
+        selectedRole={selectedRole}
+        onClose={() => setSelectedRole(null)}
+        onSuccess={() => {
+          setSelectedRole(null);
+          window.location.href = '/admin';
+        }}
+      />
     </footer>
+
   );
 };
 
@@ -810,7 +881,7 @@ const Layout: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen relative font-inter bg-brand-beige">
       <Navbar />
-      <main className="flex-grow pt-[104px] sm:pt-[116px] lg:pt-[116px] pb-16 lg:pb-0">
+      <main className="flex-grow pt-[96px] sm:pt-[112px] lg:pt-[128px] pb-20 lg:pb-0">
         <Outlet />
       </main>
       <Footer />

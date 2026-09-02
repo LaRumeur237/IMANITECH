@@ -455,7 +455,7 @@ const Home: React.FC = () => {
       {/* ══════════════════════════════════════════════════════
           HERO — full immersive dark with particles + slideshow
       ══════════════════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center pt-28 pb-20 overflow-hidden scanline-effect">
+      <section className="relative min-h-screen flex items-center pt-8 sm:pt-14 pb-16 sm:pb-20 overflow-hidden scanline-effect">
         {/* BG layers */}
         <BackgroundSlideshow />
         <div className="absolute inset-0" style={{ zIndex: 3 }}>
@@ -469,28 +469,28 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 pointer-events-none hex-bg" style={{ zIndex: 3, backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66z' fill='none' stroke='rgba(255,107,53,0.07)' stroke-width='1'/%3E%3Cpath d='M28 100L0 84V50l28-16 28 16v34L28 100z' fill='none' stroke='rgba(255,107,53,0.07)' stroke-width='1'/%3E%3C/svg%3E\")" }}/>
 
         {/* rotating ring */}
-        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none" style={{ zIndex: 3 }}>
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none hidden lg:block" style={{ zIndex: 3 }}>
           <div className="rotate-slow w-full h-full rounded-full border border-[#ff6b35]/10"/>
           <div className="absolute inset-8 rotate-slow w-full h-full rounded-full border border-[#ff6b35]/06" style={{ animationDirection: 'reverse' }}/>
           <div className="absolute inset-16 rotate-slow w-full h-full rounded-full border-2 border-[#ff6b35]/08"/>
         </div>
 
-        <div className="max-w-7xl mx-auto w-full px-6 relative grid grid-cols-1 lg:grid-cols-2 gap-20 items-center" style={{ zIndex: 10 }}>
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center" style={{ zIndex: 10 }}>
 
           {/* Left — copy */}
           <div>
             {/* Live badge */}
-            <div className="stagger-1 inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-[#ff6b35]/10 border border-[#ff6b35]/30 mb-8">
+            <div className="stagger-1 inline-flex items-center gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#ff6b35]/10 border border-[#ff6b35]/30 mb-6 sm:mb-8">
               <div className="relative w-2.5 h-2.5 pulse-ring">
                 <div className="w-full h-full bg-[#ff6b35] rounded-full"/>
               </div>
-              <span className="text-[9px] font-black uppercase tracking-[0.35em] text-[#ff6b35]">Expertise Digitale Premium · Cameroun 237</span>
+              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] sm:tracking-[0.35em] text-[#ff6b35]">Expertise Digitale Premium · Cameroun 237</span>
             </div>
 
             {/* Headline with glitch */}
             <div className="stagger-2 mb-6">
               <div
-                className="glitch-wrapper text-6xl sm:text-7xl lg:text-[90px] font-black leading-[0.85] uppercase tracking-tighter text-white"
+                className="glitch-wrapper text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-black leading-[0.88] uppercase tracking-tighter text-white break-words"
                 data-text={words[wordIndex]}
                 style={{
                   opacity: wordVisible ? 1 : 0,
@@ -502,20 +502,20 @@ const Home: React.FC = () => {
               >
                 {words[wordIndex]}
               </div>
-              <div className="text-6xl sm:text-7xl lg:text-[90px] font-black leading-[0.85] uppercase tracking-tighter text-white mt-1">
+              <div className="text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-black leading-[0.88] uppercase tracking-tighter text-white mt-1">
                 Votre Avenir
               </div>
-              <div className="text-6xl sm:text-7xl lg:text-[90px] font-black leading-[0.85] uppercase tracking-tighter" style={{ color: '#ff6b35', WebkitTextStroke: '1px rgba(255,107,53,0.3)' }}>
+              <div className="text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-black leading-[0.88] uppercase tracking-tighter" style={{ color: '#ff6b35', WebkitTextStroke: '1px rgba(255,107,53,0.3)' }}>
                 Digital.
               </div>
             </div>
 
             {/* Typewriter sub */}
-            <div className="stagger-3 mb-10 max-w-lg">
-              <p className="typewriter-text text-sm font-mono text-[#ff6b35] uppercase tracking-widest">
+            <div className="stagger-3 mb-8 sm:mb-10 max-w-lg">
+              <p className="typewriter-text text-xs sm:text-sm font-mono text-[#ff6b35] uppercase tracking-widest">
                 &gt; Réseau · Vidéosurveillance · Web · Sécurité
               </p>
-              <p className="text-base text-white/60 font-bold leading-relaxed mt-4">
+              <p className="text-sm sm:text-base text-white/60 font-bold leading-relaxed mt-3 sm:mt-4">
                 Imani-Tech transforme les PME camerounaises en leaders digitaux — infrastructure de classe mondiale, déployée localement.
               </p>
             </div>

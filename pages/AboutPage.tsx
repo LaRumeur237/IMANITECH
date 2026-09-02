@@ -194,14 +194,14 @@ const AboutPage: React.FC = () => {
   return (
     <div className="bg-brand-cream min-h-screen">
        {/* Hero Editorial */}
-       <section className="pt-40 pb-24 bg-brand-beige border-b border-brand-sand overflow-hidden relative">
-          <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+       <section className="py-12 sm:py-20 lg:py-24 bg-brand-beige border-b border-brand-sand overflow-hidden relative">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
              <div className="animate-in slide-in-from-left duration-1000">
-                <span className="text-brand-orange font-black uppercase tracking-[0.3em] text-[10px] mb-6 block">Notre Vision Business</span>
-                <h1 className="text-5xl md:text-8xl font-black text-brand-stone mb-10 leading-[0.9] tracking-tighter uppercase">
+                <span className="text-brand-orange font-black uppercase tracking-[0.3em] text-[10px] mb-4 sm:mb-6 block">Notre Vision Business</span>
+                <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-brand-stone mb-6 sm:mb-10 leading-[0.95] sm:leading-[0.9] tracking-tighter uppercase break-words">
                    L'Agence Élite pour les <span className="text-brand-orange">Bâtisseurs</span>.
                 </h1>
-                <p className="text-xl text-brand-stone/60 mb-12 leading-relaxed font-bold">
+                <p className="text-sm sm:text-base md:text-lg text-brand-stone/60 mb-8 sm:mb-12 leading-relaxed font-bold">
                    {SITE_NAME} est née d'un constat radical : les entreprises camerounaises méritent des stratégies d'acquisition de classe mondiale adaptées aux réalités du triangle national.
                 </p>
                 <div className="grid grid-cols-2 gap-12">

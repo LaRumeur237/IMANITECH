@@ -655,27 +655,27 @@ const PackagesPage: React.FC = () => {
         }
       `}</style>
 
-      <div className="bg-brand-cream min-h-screen pt-24">
+      <div className="bg-brand-cream min-h-screen">
 
         {/* ── HERO ─────────────────────────────────────────────────────── */}
         <section className="relative border-b border-brand-sand/20 overflow-hidden" style={{ background: '#050814' }}>
           {/* Fond spatial Canvas */}
           <SpaceBackground />
 
-          <div className="max-w-7xl mx-auto px-4 py-20 sm:py-28 relative z-10">
-            <div className="hw0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-orange/20 border border-brand-orange/30 mb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 lg:py-24 relative z-10">
+            <div className="hw0 inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-brand-orange/20 border border-brand-orange/30 mb-6 sm:mb-8">
               <Zap size={11} className="text-brand-orange" />
-              <span className="text-[9px] font-black uppercase tracking-[0.35em] text-brand-orange">
+              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] sm:tracking-[0.35em] text-brand-orange">
                 {ALL_PACKAGES.length} Solutions Adaptées au Marché Camerounais
               </span>
             </div>
 
-            <h1 className="hw1 text-5xl sm:text-7xl lg:text-[90px] font-black uppercase tracking-tighter leading-[0.88] text-white mb-6">
+            <h1 className="hw1 text-3xl sm:text-5xl md:text-7xl lg:text-[84px] font-black uppercase tracking-tighter leading-[0.92] sm:leading-[0.88] text-white mb-6 break-words">
               Nos <span className="text-brand-orange">Packages</span><br />
               <span className="text-white/15">Stratégiques</span>
             </h1>
 
-            <p className="hw2 text-base sm:text-lg text-white/40 font-bold leading-relaxed max-w-xl mb-10">
+            <p className="hw2 text-sm sm:text-base md:text-lg text-white/40 font-bold leading-relaxed max-w-xl mb-8 sm:mb-10">
               Chaque package est un dossier complet avec objectifs, plan de déploiement, ROI chiffré et garantie de résultat. Cliquez pour l'ouvrir.
             </p>
 

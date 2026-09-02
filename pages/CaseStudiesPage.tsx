@@ -14,29 +14,29 @@ const CaseStudiesPage: React.FC = () => {
   const filteredCases = filter === 'Tous' ? CASE_STUDIES : CASE_STUDIES.filter(c => c.category === filter);
 
   return (
-    <div className="bg-brand-cream min-h-screen pt-24">
+    <div className="bg-brand-cream min-h-screen">
       {/* Editorial Hero */}
-      <section className="bg-brand-beige py-24 px-4 relative overflow-hidden border-b border-brand-sand">
+      <section className="bg-brand-beige py-12 sm:py-20 px-4 relative overflow-hidden border-b border-brand-sand">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-orange/5 blur-[120px] rounded-full pointer-events-none"></div>
         <div className="max-w-7xl mx-auto text-center relative z-10 animate-in fade-in duration-700">
-          <span className="text-brand-orange font-black uppercase tracking-[0.3em] text-[10px] mb-6 block">Preuve par le Résultat</span>
-          <h1 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter uppercase leading-[0.9] text-brand-stone">
+          <span className="text-brand-orange font-black uppercase tracking-[0.3em] text-[10px] mb-4 sm:mb-6 block">Preuve par le Résultat</span>
+          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8 tracking-tighter uppercase leading-[0.95] sm:leading-[0.9] text-brand-stone break-words">
             Nos <br className="hidden sm:block" /> <span className="text-brand-orange">Réalisations</span>
           </h1>
-          <p className="text-xl text-brand-stone/60 max-w-2xl mx-auto font-bold leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-brand-stone/60 max-w-2xl mx-auto font-bold leading-relaxed">
             Découvrez 10 projets stratégiques où {SITE_NAME} a transformé des défis critiques en succès technologiques mesurables au Cameroun.
           </p>
         </div>
       </section>
 
       {/* Filter Section */}
-      <section className="py-10 border-b border-brand-sand sticky top-[72px] bg-brand-cream/80 backdrop-blur-xl z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-3">
+      <section className="py-4 sm:py-6 border-b border-brand-sand sticky top-[96px] sm:top-[112px] lg:top-[128px] bg-brand-cream/90 backdrop-blur-xl z-30 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-2 sm:gap-3">
            {industries.map(i => (
              <button 
                key={i} 
                onClick={() => setFilter(i)}
-               className={`px-8 py-3 rounded-full font-black text-[10px] uppercase tracking-widest transition-all border-2 ${filter === i ? 'bg-brand-stone text-white border-brand-stone shadow-xl' : 'bg-white text-brand-stone border-brand-sand hover:border-brand-orange'}`}
+               className={`px-5 sm:px-8 py-2.5 sm:py-3 rounded-full font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-all border-2 ${filter === i ? 'bg-brand-stone text-white border-brand-stone shadow-xl' : 'bg-white text-brand-stone border-brand-sand hover:border-brand-orange'}`}
              >
                {i}
              </button>

@@ -35,15 +35,15 @@ const MethodPage: React.FC = () => {
 
   return (
     <div className="bg-brand-cream min-h-screen page-appear">
-      <section className="bg-brand-beige py-32 px-4 border-b border-brand-sand relative overflow-hidden animate-in fade-in duration-700">
+      <section className="bg-brand-beige py-12 sm:py-20 px-4 border-b border-brand-sand relative overflow-hidden animate-in fade-in duration-700">
         <div className="max-w-7xl mx-auto text-center relative z-10">
-           <span className="text-brand-orange font-black uppercase tracking-[0.3em] text-[10px] mb-6 block">Processus ROI-Focus</span>
-           <h1 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter uppercase leading-[0.9] text-brand-stone">La Méthode <br /><span className="text-brand-orange">Imani</span>-Tech</h1>
-           <p className="text-xl text-brand-stone/60 max-w-2xl mx-auto font-bold">
+           <span className="text-brand-orange font-black uppercase tracking-[0.3em] text-[10px] mb-4 sm:mb-6 block">Processus ROI-Focus</span>
+           <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8 tracking-tighter uppercase leading-[0.95] sm:leading-[0.9] text-brand-stone break-words">La Méthode <br /><span className="text-brand-orange">Imani</span>-Tech</h1>
+           <p className="text-sm sm:text-base md:text-lg text-brand-stone/60 max-w-2xl mx-auto font-bold">
              Une approche rigoureuse en 5 étapes pour transformer chaque franc investi en résultat mesurable sur le terrain.
            </p>
-           <div className="mt-12 animate-bounce">
-              <ChevronDown className="mx-auto text-brand-orange" size={32} />
+           <div className="mt-8 sm:mt-12 animate-bounce">
+              <ChevronDown className="mx-auto text-brand-orange" size={28} />
            </div>
         </div>
       </section>

@@ -1228,15 +1228,15 @@ const ServicesPage: React.FC = () => {
           <div className="absolute pointer-events-none z-10 transition-all duration-700"
             style={{ left: `${mousePos.x*100}%`, top: `${mousePos.y*100}%`, width:400, height:400, transform:'translate(-50%,-50%)', background:`radial-gradient(circle, ${activeAccent}15, transparent)`, borderRadius:'50%' }} />
 
-          <div className="relative z-20 max-w-7xl mx-auto px-4 pt-36 pb-24">
-            <div className="hero-p inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-orange/30 bg-brand-orange/10 mb-10">
+          <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-16 pb-16 sm:pb-24">
+            <div className="hero-p inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-brand-orange/30 bg-brand-orange/10 mb-6 sm:mb-10">
               <Zap size={11} className="text-brand-orange animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-brand-orange">Référentiel Technique 2025 — Cameroun</span>
+              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-brand-orange">Référentiel Technique 2025 — Cameroun</span>
             </div>
-            <h1 className="hero-t text-6xl sm:text-8xl lg:text-[110px] font-black uppercase tracking-tighter leading-[0.85] text-white mb-8">
+            <h1 className="hero-t text-3xl sm:text-6xl md:text-7xl lg:text-[90px] xl:text-[100px] font-black uppercase tracking-tighter leading-[0.95] sm:leading-[0.85] text-white mb-6 sm:mb-8 break-words">
               Nos <span className="text-brand-orange">Infrastructures</span><br /><span className="text-white/40">& Expertises.</span>
             </h1>
-            <p className="hero-sub text-lg text-white max-w-2xl font-bold leading-relaxed mb-12">
+            <p className="hero-sub text-sm sm:text-base md:text-lg text-white max-w-2xl font-bold leading-relaxed mb-8 sm:mb-12">
               Cliquez sur chaque service pour accéder au dossier technique complet et comprendre comment nous sécurisons votre croissance.
             </p>
             <div className="hero-cta flex flex-col sm:flex-row gap-4">
