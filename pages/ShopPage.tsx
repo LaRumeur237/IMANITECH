@@ -276,7 +276,7 @@ const CartDrawer: React.FC<{
 
       {/* Drawer Panel */}
       <div
-        className="relative bg-white w-full sm:w-[450px] md:w-[500px] h-full flex flex-col shadow-2xl z-10"
+        className="relative bg-white w-full sm:w-[450px] md:w-[500px] h-[100dvh] max-h-[100dvh] flex flex-col shadow-2xl z-10"
         style={{ animation: 'slideInFromRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both' }}
       >
         {/* Header */}
@@ -372,11 +372,11 @@ const CartDrawer: React.FC<{
                   className="bg-white border border-brand-sand/80 rounded-2xl p-3 sm:p-3.5 flex gap-3 hover:border-brand-orange/40 transition-colors shadow-sm"
                 >
                   {/* Image */}
-                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-brand-beige/40 shrink-0 border border-brand-sand/50">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-brand-beige/40 shrink-0 border border-brand-sand/50">
                     <img
                       src={item.product.image}
                       alt={item.product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain p-1"
                     />
                   </div>
 
@@ -409,7 +409,7 @@ const CartDrawer: React.FC<{
                       <div className="flex items-center gap-1 bg-brand-beige/80 rounded-xl px-1.5 py-0.5 border border-brand-sand/60">
                         <button
                           onClick={() => onUpdateQty(item.product.id, -1)}
-                          className="w-6 h-6 rounded-lg bg-white hover:bg-red-50 hover:text-red-500 text-brand-stone/60 flex items-center justify-center transition-all shadow-xs active:scale-90"
+                          className="w-6 h-6 rounded-lg bg-white hover:bg-red-50 hover:text-red-500 text-brand-stone/60 flex items-center justify-center transition-all shadow-sm active:scale-90"
                         >
                           <Minus size={10} />
                         </button>
@@ -418,7 +418,7 @@ const CartDrawer: React.FC<{
                         </span>
                         <button
                           onClick={() => onUpdateQty(item.product.id, 1)}
-                          className="w-6 h-6 rounded-lg bg-white hover:bg-brand-orange hover:text-white text-brand-stone/60 flex items-center justify-center transition-all shadow-xs active:scale-90"
+                          className="w-6 h-6 rounded-lg bg-white hover:bg-brand-orange hover:text-white text-brand-stone/60 flex items-center justify-center transition-all shadow-sm active:scale-90"
                         >
                           <Plus size={10} />
                         </button>
@@ -433,7 +433,7 @@ const CartDrawer: React.FC<{
 
         {/* Footer Panier */}
         {cart.length > 0 && (
-          <div className="shrink-0 bg-white border-t border-brand-sand p-4 sm:p-5 space-y-3 shadow-lg">
+          <div className="shrink-0 bg-white border-t border-brand-sand p-4 sm:p-5 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-3 shadow-lg">
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-[11px] font-bold text-brand-stone/60">
                 <span>Sous-total</span>
@@ -990,7 +990,7 @@ const ProductModal: React.FC<{
       <div className="absolute inset-0" onClick={onClose} />
 
       <div
-        className="relative bg-white w-full sm:max-w-2xl rounded-t-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden max-h-[92vh]"
+        className="relative bg-white w-full sm:max-w-2xl rounded-t-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden max-h-[92dvh]"
         style={{ animation: 'slideInFromBottom 0.3s cubic-bezier(0.16, 1, 0.3, 1) both' }}
       >
         {/* Header modal */}
@@ -1021,7 +1021,7 @@ const ProductModal: React.FC<{
               <img
                 src={p.image}
                 alt={p.name}
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-contain rounded-xl"
               />
             </div>
 
@@ -1091,21 +1091,21 @@ const ProductModal: React.FC<{
         </div>
 
         {/* Footer actions modal */}
-        <div className="shrink-0 p-4 sm:p-5 bg-white border-t border-brand-sand flex flex-col sm:flex-row items-center gap-3">
+        <div className="shrink-0 p-4 sm:p-5 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white border-t border-brand-sand flex flex-col sm:flex-row items-center gap-3">
           {/* Stepper quantité */}
           <div className="flex items-center justify-between w-full sm:w-auto gap-2 bg-brand-beige/80 rounded-2xl px-3 py-2 border border-brand-sand">
             <span className="text-[10px] font-bold text-brand-stone/60 uppercase">Qté:</span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setQty(q => Math.max(1, q - 1))}
-                className="w-7 h-7 rounded-xl bg-white hover:bg-brand-orange hover:text-white flex items-center justify-center font-black transition-all shadow-xs"
+                className="w-7 h-7 rounded-xl bg-white hover:bg-brand-orange hover:text-white flex items-center justify-center font-black transition-all shadow-sm"
               >
                 <Minus size={12} />
               </button>
               <span className="text-sm font-black text-brand-stone w-6 text-center tabular-nums">{qty}</span>
               <button
                 onClick={() => setQty(q => q + 1)}
-                className="w-7 h-7 rounded-xl bg-white hover:bg-brand-orange hover:text-white flex items-center justify-center font-black transition-all shadow-xs"
+                className="w-7 h-7 rounded-xl bg-white hover:bg-brand-orange hover:text-white flex items-center justify-center font-black transition-all shadow-sm"
               >
                 <Plus size={12} />
               </button>

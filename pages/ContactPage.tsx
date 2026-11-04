@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Phone, Mail, MessageSquare, Send, Globe, ChevronRight, CheckCircle, Loader2, AlertCircle, X } from 'lucide-react';
 import { WHATSAPP_LINK, WHATSAPP_NUMBER, OFFICIAL_EMAIL } from '../data';
 
-const WHATSAPP_CONTACT_NUMBER = '33759836478';
+const WHATSAPP_CONTACT_NUMBER = '237672777657';
 
 // ── Modale de confirmation WhatsApp ────────────────────────────────────────────
 const WhatsAppModal: React.FC<{ onConfirm: () => void; onCancel: () => void }> = ({ onConfirm, onCancel }) => (
@@ -45,7 +45,7 @@ const WhatsAppModal: React.FC<{ onConfirm: () => void; onCancel: () => void }> =
       {/* Numéro affiché */}
       <div className="bg-[#25D366]/8 border border-[#25D366]/20 rounded-2xl py-3 px-5 mb-8 inline-flex items-center gap-2">
         <span className="text-[#25D366] text-lg">📱</span>
-        <span className="font-black text-brand-stone text-sm tracking-wide">+33 7 59 83 64 78</span>
+        <span className="font-black text-brand-stone text-sm tracking-wide">+237 6 72 77 76 57</span>
       </div>
 
       {/* Boutons */}
@@ -281,7 +281,7 @@ _Envoyé depuis le formulaire contact imani-tech.cm_`;
 
                 <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-brand-stone/25">
                   <MessageSquare size={11} className="text-green-500"/>
-                  <span>Envoi direct sur WhatsApp · +33 7 59 83 64 78</span>
+                  <span>Envoi direct sur WhatsApp · +237 6 72 77 76 57</span>
                 </div>
 
               </form>

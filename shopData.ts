@@ -1,7 +1,7 @@
 // ─── SHOP DATA — IMANI-TECH BOUTIQUE ─────────────────────────────────────────
 // 150 produits détaillés avec caractéristiques techniques complètes
 
-export const WHATSAPP_ORDER_NUMBER = '237600000000';
+export const WHATSAPP_ORDER_NUMBER = '237672777657';
 export const ORANGE_MONEY_NUMBER = '237655000000';
 export const MTN_MOMO_NUMBER = '237677000000';
 
